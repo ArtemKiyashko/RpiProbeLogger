@@ -1,0 +1,1 @@
+scp -rp bin\Debug\netcoreapp3.1\ pi@raspberrypi.local:~/RpiProbeLogger
