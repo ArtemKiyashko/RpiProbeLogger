@@ -2,13 +2,13 @@
 Description=Probe Logger Service
 
 [Service]
+User=pi
 WorkingDirectory=/home/pi
-ExecStart=dotnet /home/pi/RpiProbeLogger/RpiProbeLogger.dll
+ExecStart=/home/pi/dotnet/dotnet /home/pi/RpiProbeLogger/RpiProbeLogger.dll
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 Restart=on-failure
-RestartPreventExitStatus=255
-Type=notify
+Type=exec
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=RpiProbeLogger
