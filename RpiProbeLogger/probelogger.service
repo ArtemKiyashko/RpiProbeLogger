@@ -1,0 +1,17 @@
+[Unit]
+Description=Probe Logger Service
+
+[Service]
+WorkingDirectory=/home/pi
+ExecStart=dotnet /home/pi/RpiProbeLogger/RpiProbeLogger.dll
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+RestartPreventExitStatus=255
+Type=notify
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=RpiProbeLogger
+
+[Install]
+WantedBy=multi-user.target
