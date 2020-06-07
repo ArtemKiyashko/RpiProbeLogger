@@ -1,4 +1,6 @@
 #Requires -Modules Posh-SSH
+
+$rsaKeyFile = '~/.ssh/personal'
 # Posh-SSH will user password to decrypt key with passphrase
 # SSH Session to run bash commands over SSH
 $sshSession = Get-SSHSession
@@ -12,12 +14,12 @@ if (!$sshSession -Or !$sftpSession)
 
 if(!$sshSession)
 {
-	$sshSession = New-SSHSession -Computer raspberrypi.local -Credential $credentials -KeyFile '~/.ssh/personal'
+	$sshSession = New-SSHSession -Computer raspberrypi.local -Credential $credentials -KeyFile $rsaKeyFile
 }
 
 if(!$sftpSession)
 {
-	$sftpSession = New-SFTPSession -Computer raspberrypi.local -Credential $credentials -KeyFile '~/.ssh/personal'
+	$sftpSession = New-SFTPSession -Computer raspberrypi.local -Credential $credentials -KeyFile $rsaKeyFile
 }
 
 dotnet build
