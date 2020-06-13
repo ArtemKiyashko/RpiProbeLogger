@@ -2,9 +2,9 @@
 Description=Probe Logger Service
 
 [Service]
-User=pi
+User=root
 WorkingDirectory=/home/pi
-ExecStart=/home/pi/dotnet/dotnet /home/pi/RpiProbeLogger/RpiProbeLogger.dll
+ExecStart=/home/pi/RpiProbeLogger/RpiProbeLogger
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 Restart=on-failure

@@ -18,6 +18,7 @@ namespace RpiProbeLogger.Reports.Services
         private CsvWriter _csvWriter;
         private readonly ILogger<ReportService> _logger;
         private readonly StatusReportService _statusReportService;
+        public bool ReportFileCreated { get => _csvWriter != null; }
 
         public ReportService(ILogger<ReportService> logger, StatusReportService statusReportService)
         {
@@ -37,7 +38,7 @@ namespace RpiProbeLogger.Reports.Services
             Dispose(true);
         }
 
-        public bool WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, float? outsideTemperature)
+        public bool WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, double? outsideTemperature)
         {
             var record = new ReportModel();
             try
@@ -73,7 +74,7 @@ namespace RpiProbeLogger.Reports.Services
             _logger.LogInformation($"Report file {(existingLog ? "chosen" : "created")}: {fileName}");
         }
 
-        private ReportModel MapToReportModel(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, float? outsideTemperature)
+        private ReportModel MapToReportModel(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, double? outsideTemperature)
             => new ReportModel
             {
                 Latitude = gpsModuleResponse.Latitude,

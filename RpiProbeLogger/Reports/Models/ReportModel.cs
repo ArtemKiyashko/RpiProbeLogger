@@ -25,7 +25,7 @@ namespace RpiProbeLogger.Reports.Models
         public float? PressureTemperature { get; set; }
         public float? Humidity { get; set; }
         public float? HumidityTemperature { get; set; }
-        public float? OutsideTemperature { get; set; }
+        public double? OutsideTemperature { get; set; }
 
         [Ignore]
         public bool Status => !string.IsNullOrEmpty(Latitude) &&

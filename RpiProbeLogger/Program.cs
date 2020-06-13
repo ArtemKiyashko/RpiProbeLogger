@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO.Ports;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RJCP.IO.Ports;
 using RpiProbeLogger.Communication.Commands;
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Reports.Services;
 using RpiProbeLogger.Sensors.Services;
-using Sense;
 using Sense.RTIMU;
 
 namespace RpiProbeLogger
@@ -49,6 +48,7 @@ namespace RpiProbeLogger
                     services.AddTransient<SenseService>();
                     services.AddTransient<ReportService>();
                     services.AddSingleton<StatusReportService>();
+                    services.AddSingleton<TemperService>();
                 })
                 .ConfigureLogging(logConfig =>
                 {

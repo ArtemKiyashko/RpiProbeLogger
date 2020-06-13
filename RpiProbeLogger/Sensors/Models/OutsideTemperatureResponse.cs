@@ -9,7 +9,7 @@ namespace RpiProbeLogger.Sensors.Models
 {
     public class OutsideTemperatureResponse : IResponse
     {
-        public float? OutsideTemperature { get; set; }
+        public double? OutsideTemperature { get; set; }
 
         [Ignore]
         public bool Status => OutsideTemperature.HasValue;

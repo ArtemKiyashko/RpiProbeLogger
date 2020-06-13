@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace RpiProbeLogger
 {
     public class RpiProbeHostedService : IHostedService
@@ -24,6 +25,7 @@ namespace RpiProbeLogger
         private readonly ILogger<RpiProbeHostedService> _logger;
         private readonly SenseService _senseService;
         private readonly ReportService _reportService;
+        private readonly TemperService _temperService;
 
         public RpiProbeHostedService(
             GpsModuleStatusCommand gpsModuleStatusCommand,
@@ -31,7 +33,8 @@ namespace RpiProbeLogger
             SerialPort serialPort,
             ILogger<RpiProbeHostedService> logger,
             SenseService senseService,
-            ReportService reportService)
+            ReportService reportService,
+            TemperService temperService)
         {
             _gpsModuleStatusCommand = gpsModuleStatusCommand;
             _gpsModuleCoordinatesCommand = gpsModuleCoordinatesCommand;
@@ -39,14 +42,11 @@ namespace RpiProbeLogger
             _logger = logger;
             _senseService = senseService;
             _reportService = reportService;
+            _temperService = temperService;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            //while (true)
-            //{
-            //    if (Debugger.IsAttached) break;
-            //}
             var gpsStatus = _gpsModuleStatusCommand.GetStatus();
             
             if (gpsStatus?.Enabled == false)
@@ -56,15 +56,6 @@ namespace RpiProbeLogger
                             Enabled = true,
                             Mode = GpsModuleModes.Standalone
                         });
-            //var gpsStatusSet = Retry.Do(() =>
-            //{
-            //    return _gpsModuleStatusCommand.SetStatus(
-            //            new GpsModuleStatusResponse
-            //            {
-            //                Enabled = true,
-            //                Mode = GpsModuleModes.Standalone
-            //            });
-            //}, TimeSpan.FromSeconds(1), (result) => result);
 
             while (true)
             {
@@ -72,12 +63,13 @@ namespace RpiProbeLogger
                     return Task.CompletedTask;
 
                 var gpsData = _gpsModuleCoordinatesCommand.GetGpsData();
-                if (gpsData != null)
+                if (gpsData != null || _reportService.ReportFileCreated)
                 {
                     var senseData = _senseService.GetSensorsData();
+                    var outsideTemperatureResponse = _temperService.ReadTemperature();
                     try
                     {
-                        _reportService.WriteReport(senseData, gpsData, 0);
+                        _reportService.WriteReport(senseData, gpsData, outsideTemperatureResponse.OutsideTemperature);
                     }
                     catch (Exception ex)
                     {
