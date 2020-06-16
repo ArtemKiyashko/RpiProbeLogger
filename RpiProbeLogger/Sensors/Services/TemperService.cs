@@ -69,7 +69,8 @@ namespace RpiProbeLogger.Sensors.Services
             {
                 _bulkStream.Write(_tempCommand);
                 var rawResult = _bulkStream.Read();
-                response.OutsideTemperature = ((rawResult[4] & 0xFF) + (rawResult[3] << 8)) * 0.01;
+
+                response.OutsideTemperature = ((rawResult[4] & 0xFF) + ((sbyte)rawResult[3] << 8)) * 0.01;
                 _statusReportService.DisplayStatus(response);
                 return response;
             }
