@@ -69,7 +69,7 @@ namespace RpiProbeLogger
                     var outsideTemperatureResponse = _temperService.ReadTemperature();
                     try
                     {
-                        _reportService.WriteReport(senseData, gpsData, outsideTemperatureResponse.OutsideTemperature);
+                        _reportService.WriteReport(senseData, gpsData, outsideTemperatureResponse?.OutsideTemperature);
                     }
                     catch (Exception ex)
                     {

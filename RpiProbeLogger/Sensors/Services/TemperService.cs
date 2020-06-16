@@ -17,8 +17,8 @@ namespace RpiProbeLogger.Sensors.Services
         private byte[] _tempCommand = { 0x01, 0x80, 0x33, 0x01, 0x00, 0x00, 0x00, 0x00 };
         private byte[] _ini1Command = { 0x01, 0x82, 0x77, 0x01, 0x00, 0x00, 0x00, 0x00 };
         private byte[] _ini2Command = { 0x01, 0x86, 0xff, 0x01, 0x00, 0x00, 0x00, 0x00 };
-        private readonly HidDevice _controlDevice;
-        private readonly HidDevice _bulkDevice;
+        private HidDevice _controlDevice;
+        private HidDevice _bulkDevice;
         private bool _controlDeviceOpen;
         private bool _bulkDeviceOpen;
         private HidStream _controlStream;
@@ -36,6 +36,12 @@ namespace RpiProbeLogger.Sensors.Services
             StatusReportService statusReportService)
         {
             _logger = logger;
+            _statusReportService = statusReportService;
+            OpenDevices();
+        }
+
+        private void OpenDevices()
+        {
             var temperatureInterfaces = DeviceList
                 .Local
                 .GetHidDevices()
@@ -43,12 +49,12 @@ namespace RpiProbeLogger.Sensors.Services
 
             _controlDevice = temperatureInterfaces.FirstOrDefault(x => x.DevicePath.Contains(CONTROL_INTERFACE_NAME));
             _bulkDevice = temperatureInterfaces.FirstOrDefault(x => x.DevicePath.Contains(BULK_INTERFACE_NAME));
-            OpenDevices();
-            _statusReportService = statusReportService;
-        }
 
-        private void OpenDevices()
-        {
+            if (_controlDevice == null || _bulkDevice == null)
+            {
+                _statusReportService.DisplayStatus(new OutsideTemperatureResponse());
+                return;
+            }
             if (_controlDevice.TryOpen(out _controlStream))
             {
                 _controlDeviceOpen = true;
