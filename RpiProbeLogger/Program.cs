@@ -58,42 +58,5 @@ namespace RpiProbeLogger
                 .Build();
             await host.RunAsync();
         }
-
-        private static void TestRTIMULib()
-        {
-            using (var settings = RTIMUSettings.CreateDefault())
-            using (var imu = settings.CreateIMU())
-            using (var pressure = settings.CreatePressure())
-            using (var humidity = settings.CreateHumidity())
-            {
-                while (true)
-                {
-                    var imuData = imu.GetData();
-                    Console.WriteLine($"Timestamp: {imuData.Timestamp:O}");
-                    Console.WriteLine($"FusionPose: Valid: {imuData.FusionPoseValid}, Value: {imuData.FusionPose}");
-                    Console.WriteLine($"FusionQPose: Valid: {imuData.FusionQPoseValid}, Value: {imuData.FusionQPose}");
-                    Console.WriteLine($"Gyro: Valid: {imuData.GyroValid}, Value: {imuData.Gyro}");
-                    Console.WriteLine($"Accel: Valid: {imuData.AccelValid}, Value: {imuData.Accel}");
-                    Console.WriteLine($"Compass: Valid: {imuData.CompassValid}, Value: {imuData.Compass}");
-                    Console.WriteLine();
-
-                    var pressureReadResult = pressure.Read();
-                    Console.WriteLine($"Pressure valid: {pressureReadResult.PressureValid}");
-                    Console.WriteLine($"Pressure: {pressureReadResult.Pressure}");
-                    Console.WriteLine($"Temperature valid: {pressureReadResult.TemperatureValid}");
-                    Console.WriteLine($"Temperature: {pressureReadResult.Temperatur}");
-                    Console.WriteLine();
-
-                    var humidityReadResult = humidity.Read();
-                    Console.WriteLine($"Humidity valid: {humidityReadResult.HumidityValid}");
-                    Console.WriteLine($"Humidity: {humidityReadResult.Humidity}");
-                    Console.WriteLine($"Temperature valid: {humidityReadResult.TemperatureValid}");
-                    Console.WriteLine($"Temperature: {humidityReadResult.Temperatur}");
-
-                    Console.WriteLine("===================================================");
-                    Console.ReadLine();
-                }
-            }
-        }
     }
 }
