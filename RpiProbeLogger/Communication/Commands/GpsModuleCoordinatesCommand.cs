@@ -15,14 +15,14 @@ namespace RpiProbeLogger.Communication.Commands
         private const string TIME_COMMAND = "=1";
         private readonly SerialPort _serialPort;
         private readonly ILogger<GpsModuleCoordinatesCommand> _logger;
-        private readonly StatusReportService _statusReportService;
+        private readonly IStatusReportService _statusReportService;
 
         public delegate void CoordinatesHandler(GpsModuleResponse gpsModuleResponse);
         public event CoordinatesHandler OnCoordinatesReceived;
 
         public GpsModuleCoordinatesCommand(SerialPort serialPort,
             ILogger<GpsModuleCoordinatesCommand> logger,
-            StatusReportService statusReportService)
+            IStatusReportService statusReportService)
         {
             _serialPort = serialPort;
             _logger = logger;

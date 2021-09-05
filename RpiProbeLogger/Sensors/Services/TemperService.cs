@@ -29,11 +29,11 @@ namespace RpiProbeLogger.Sensors.Services
         private const string CONTROL_INTERFACE_NAME = "hidraw0";
         private const string BULK_INTERFACE_NAME = "hidraw1";
         private readonly ILogger<TemperService> _logger;
-        private readonly StatusReportService _statusReportService;
+        private readonly IStatusReportService _statusReportService;
 
         public TemperService(
             ILogger<TemperService> logger,
-            StatusReportService statusReportService)
+            IStatusReportService statusReportService)
         {
             _logger = logger;
             _statusReportService = statusReportService;

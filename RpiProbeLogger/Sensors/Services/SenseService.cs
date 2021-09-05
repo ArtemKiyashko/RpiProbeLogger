@@ -15,13 +15,13 @@ namespace RpiProbeLogger.Sensors.Services
         private readonly RTIMU _senseCommon;
         private readonly RTPressure _sensePressure;
         private readonly RTHumidity _senseHumidity;
-        private readonly StatusReportService _statusReportService;
+        private readonly IStatusReportService _statusReportService;
 
         public SenseService(ILogger<SenseService> logger,
             RTIMU senseCommon,
             RTPressure sensePressure,
             RTHumidity senseHumidity,
-            StatusReportService statusReportService)
+            IStatusReportService statusReportService)
         {
             _logger = logger;
             _senseCommon = senseCommon;

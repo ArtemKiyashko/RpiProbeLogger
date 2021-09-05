@@ -47,7 +47,7 @@ namespace RpiProbeLogger
                     });
                     services.AddTransient<SenseService>();
                     services.AddTransient<ReportService>();
-                    services.AddSingleton<StatusReportService>();
+                    services.AddSingleton<IStatusReportService, StatusReportService>();
                     services.AddSingleton<TemperService>();
                 })
                 .ConfigureLogging(logConfig =>

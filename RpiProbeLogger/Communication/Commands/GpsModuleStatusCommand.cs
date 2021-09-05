@@ -17,11 +17,11 @@ namespace RpiProbeLogger.Communication.Commands
         private const string SET_STATUS_COMMAND = "=";
         private readonly SerialPort _serialPort;
         private readonly ILogger<GpsModuleStatusCommand> _logger;
-        private readonly StatusReportService _statusReportService;
+        private readonly IStatusReportService _statusReportService;
 
         public GpsModuleStatusCommand(SerialPort serialPort,
             ILogger<GpsModuleStatusCommand> logger,
-            StatusReportService statusReportService)
+            IStatusReportService statusReportService)
         {
             _serialPort = serialPort;
             _logger = logger;

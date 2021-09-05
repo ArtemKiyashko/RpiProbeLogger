@@ -17,10 +17,10 @@ namespace RpiProbeLogger.Reports.Services
         private StreamWriter _streamWriter;
         private CsvWriter _csvWriter;
         private readonly ILogger<ReportService> _logger;
-        private readonly StatusReportService _statusReportService;
+        private readonly IStatusReportService _statusReportService;
         public bool ReportFileCreated { get => _csvWriter != null; }
 
-        public ReportService(ILogger<ReportService> logger, StatusReportService statusReportService)
+        public ReportService(ILogger<ReportService> logger, IStatusReportService statusReportService)
         {
             _logger = logger;
             _statusReportService = statusReportService;

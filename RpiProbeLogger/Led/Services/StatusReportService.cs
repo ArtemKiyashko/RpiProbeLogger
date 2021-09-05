@@ -11,7 +11,7 @@ using System.Text;
 
 namespace RpiProbeLogger.Led.Services
 {
-    public class StatusReportService : IDisposable
+    public class StatusReportService : IDisposable, IStatusReportService
     {
         private readonly ILogger<StatusReportService> _logger;
         private IList<CellColor> _currentStatuses;
