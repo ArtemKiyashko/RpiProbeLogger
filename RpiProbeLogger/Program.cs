@@ -27,7 +27,6 @@ namespace RpiProbeLogger
                     services.AddTransient<GpsModuleStatusCommand>();
                     services.AddTransient<GpsModuleCoordinatesCommand>();
                     services.AddSensorDataServices();
-                    services.AddTransient<SenseService>();
                     services.AddTransient<IReportService, ReportService>();
                     services.AddSingleton<IStatusReportService, StatusReportService>();
                     services.AddTemper();

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RpiProbeLogger.Helpers;
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Sensors.Services;
 using Sense.RTIMU;
@@ -39,6 +40,8 @@ namespace RpiProbeLogger.Extensions
                 var muSettings = provider.GetService<RTIMUSettings>();
                 return muSettings.CreateHumidity();
             });
+
+            services.AddTransient<ISenseService, SenseService>();
             return services;
         }
 

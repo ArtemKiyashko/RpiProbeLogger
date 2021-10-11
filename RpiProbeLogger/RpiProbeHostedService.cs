@@ -23,7 +23,7 @@ namespace RpiProbeLogger
         private readonly GpsModuleCoordinatesCommand _gpsModuleCoordinatesCommand;
         private readonly SerialPort _serialPort;
         private readonly ILogger<RpiProbeHostedService> _logger;
-        private readonly SenseService _senseService;
+        private readonly ISenseService _senseService;
         private readonly IReportService _reportService;
         private readonly ITemperService _temperService;
 
@@ -32,7 +32,7 @@ namespace RpiProbeLogger
             GpsModuleCoordinatesCommand gpsModuleCoordinatesCommand,
             SerialPort serialPort,
             ILogger<RpiProbeHostedService> logger,
-            SenseService senseService,
+            ISenseService senseService,
             IReportService reportService,
             ITemperService temperService)
         {
@@ -63,7 +63,7 @@ namespace RpiProbeLogger
                     return Task.CompletedTask;
 
                 var gpsData = _gpsModuleCoordinatesCommand.GetGpsData();
-                if (gpsData != null || _reportService.ReportFileCreated)
+                if (gpsData is not null || _reportService.ReportFileCreated)
                 {
                     var senseData = _senseService.GetSensorsData();
                     var outsideTemperatureResponse = _temperService.ReadTemperature();
