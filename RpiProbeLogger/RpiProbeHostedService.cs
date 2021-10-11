@@ -24,8 +24,8 @@ namespace RpiProbeLogger
         private readonly SerialPort _serialPort;
         private readonly ILogger<RpiProbeHostedService> _logger;
         private readonly SenseService _senseService;
-        private readonly ReportService _reportService;
-        private readonly TemperService _temperService;
+        private readonly IReportService _reportService;
+        private readonly ITemperService _temperService;
 
         public RpiProbeHostedService(
             GpsModuleStatusCommand gpsModuleStatusCommand,
@@ -33,8 +33,8 @@ namespace RpiProbeLogger
             SerialPort serialPort,
             ILogger<RpiProbeHostedService> logger,
             SenseService senseService,
-            ReportService reportService,
-            TemperService temperService)
+            IReportService reportService,
+            ITemperService temperService)
         {
             _gpsModuleStatusCommand = gpsModuleStatusCommand;
             _gpsModuleCoordinatesCommand = gpsModuleCoordinatesCommand;

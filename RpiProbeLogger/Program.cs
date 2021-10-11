@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RpiProbeLogger.Communication.Commands;
+using RpiProbeLogger.Extensions;
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Reports.Services;
 using RpiProbeLogger.Sensors.Services;
@@ -22,33 +23,15 @@ namespace RpiProbeLogger
             var host = new HostBuilder()
                 .ConfigureServices((hostContext, services) => {
                     services.AddHostedService<RpiProbeHostedService>();
-                    services.AddSingleton<SerialPort>((_) => { 
-                        var serialPort = new SerialPort("/dev/ttyS0", 115200);
-                        serialPort.ReadTimeout = 500;
-                        serialPort.WriteTimeout = 500;
-                        serialPort.NewLine = "\r";
-                        serialPort.Open();
-                        return serialPort;
-                    });
+                    services.AddSerialPort("/dev/ttyS0", 115200);
                     services.AddTransient<GpsModuleStatusCommand>();
                     services.AddTransient<GpsModuleCoordinatesCommand>();
-                    services.AddSingleton<RTIMUSettings>((_) => RTIMUSettings.CreateDefault());
-                    services.AddSingleton<RTIMU>((provider) => {
-                        var muSettings = provider.GetService<RTIMUSettings>();
-                        return muSettings.CreateIMU();
-                    });
-                    services.AddSingleton<RTPressure>((provider) => {
-                        var muSettings = provider.GetService<RTIMUSettings>();
-                        return muSettings.CreatePressure();
-                    });
-                    services.AddSingleton<RTHumidity>((provider) => {
-                        var muSettings = provider.GetService<RTIMUSettings>();
-                        return muSettings.CreateHumidity();
-                    });
+                    services.AddSensorDataServices();
                     services.AddTransient<SenseService>();
-                    services.AddTransient<ReportService>();
+                    services.AddTransient<IReportService, ReportService>();
                     services.AddSingleton<IStatusReportService, StatusReportService>();
-                    services.AddSingleton<TemperService>();
+                    services.AddTemper();
+                    services.AddTransient<IReportFileHandler, ReportCsvHandler>();
                 })
                 .ConfigureLogging(logConfig =>
                 {

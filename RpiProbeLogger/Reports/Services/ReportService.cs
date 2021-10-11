@@ -12,77 +12,52 @@ using System.Text;
 
 namespace RpiProbeLogger.Reports.Services
 {
-    public class ReportService : IDisposable
+    public class ReportService : IReportService
     {
-        private StreamWriter _streamWriter;
-        private CsvWriter _csvWriter;
         private readonly ILogger<ReportService> _logger;
         private readonly IStatusReportService _statusReportService;
-        public bool ReportFileCreated { get => _csvWriter != null; }
+        private readonly IReportFileHandler _reportFileHandler;
 
-        public ReportService(ILogger<ReportService> logger, IStatusReportService statusReportService)
+        public bool ReportFileCreated { get; private set; }
+
+        public ReportService(
+            ILogger<ReportService> logger, 
+            IStatusReportService statusReportService,
+            IReportFileHandler reportFileHandler)
         {
             _logger = logger;
             _statusReportService = statusReportService;
-        }
-
-        protected virtual void Dispose(bool dispose)
-        {
-            _csvWriter?.Dispose();
-            _streamWriter?.Dispose();
-            _csvWriter = null;
-            _streamWriter = null;
-        }
-        public void Dispose()
-        {
-            Dispose(true);
+            _reportFileHandler = reportFileHandler;
         }
 
         public bool WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, double? outsideTemperature)
         {
-            var record = new ReportModel();
+
             try
             {
-                if (_csvWriter == null)
-                    CreateCsv(gpsModuleResponse);
-                record = MapToReportModel(senseResponse, gpsModuleResponse, outsideTemperature);
-                _csvWriter.WriteRecord(record);
-                _csvWriter.NextRecord();
+                ReportFileCreated = _reportFileHandler.CreateFile<ReportModel>(gpsModuleResponse);
+                var record = MapToReportModel(senseResponse, gpsModuleResponse, outsideTemperature);
+                _reportFileHandler.WriteRecord(record);
                 _statusReportService.DisplayStatus(record);
                 return true;
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error writing report");
-                _statusReportService.DisplayStatus(record);
+                _statusReportService.DisplayStatus<ReportModel>(new());
             }
             return false;
         }
 
-        private void CreateCsv(GpsModuleResponse gpsModuleResponse)
-        {
-            var fileName = $"{gpsModuleResponse.DateTimeUtc.Date:ddMMyyyy}.csv";
-            var existingLog = File.Exists(fileName);
-            _streamWriter = new StreamWriter(fileName, true);
-            _streamWriter.AutoFlush = true;
-            _csvWriter = new CsvWriter(_streamWriter, CultureInfo.InvariantCulture);
-            _csvWriter.Configuration.NewLine = CsvHelper.Configuration.NewLine.CRLF;
-            if (!existingLog)
+        private static ReportModel MapToReportModel(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, double? outsideTemperature)
+            => new()
             {
-                _csvWriter.WriteHeader<ReportModel>();
-                _csvWriter.NextRecord();
-            }
-            _logger.LogInformation($"Report file {(existingLog ? "chosen" : "created")}: {fileName}");
-        }
-
-        private ReportModel MapToReportModel(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, double? outsideTemperature)
-            => new ReportModel
-            {
-                Latitude = gpsModuleResponse.Latitude,
-                Longitude = gpsModuleResponse.Longitude,
-                DateTimeUtc = gpsModuleResponse.DateTimeUtc,
-                Altitude = gpsModuleResponse.Altitude,
-                Speed = gpsModuleResponse.Speed,
-                Course = gpsModuleResponse.Course,
+                Latitude = gpsModuleResponse?.Latitude,
+                Longitude = gpsModuleResponse?.Longitude,
+                DateTimeUtc = gpsModuleResponse?.DateTimeUtc,
+                Altitude = gpsModuleResponse?.Altitude,
+                Speed = gpsModuleResponse?.Speed,
+                Course = gpsModuleResponse?.Course,
                 FusionPose = senseResponse?.FusionPose,
                 FusionQPose = senseResponse?.FusionQPose,
                 Gyro = senseResponse?.Gyro,

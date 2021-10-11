@@ -9,7 +9,7 @@ using System.Text;
 
 namespace RpiProbeLogger.Sensors.Services
 {
-    public class SenseService
+    public class SenseService : ISenseService
     {
         private readonly ILogger<SenseService> _logger;
         private readonly RTIMU _senseCommon;
@@ -32,13 +32,12 @@ namespace RpiProbeLogger.Sensors.Services
 
         public SenseResponse GetSensorsData()
         {
-            var response = new SenseResponse();
             try
             {
                 var imu = _senseCommon.GetData();
                 var pressure = _sensePressure.Read();
                 var humidity = _senseHumidity.Read();
-                response = new SenseResponse
+                var response = new SenseResponse
                 {
                     FusionPose = imu.FusionPoseValid ? imu.FusionPose : (Vector3?)null,
                     FusionQPose = imu.FusionQPoseValid ? imu.FusionQPose : (Quaternion?)(null),
@@ -56,7 +55,7 @@ namespace RpiProbeLogger.Sensors.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error reading Sense data");
-                _statusReportService.DisplayStatus(response);
+                _statusReportService.DisplayStatus<SenseResponse>(new());
             }
             return null;
         }
