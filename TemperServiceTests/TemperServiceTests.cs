@@ -17,7 +17,7 @@ namespace TemperServiceTests
     public class TemperServiceTests
     {
         private readonly IFixture _fixture;
-        private readonly TemperService _temperService;
+        private readonly ITemperService _temperService;
         private readonly Mock<IHidDeviceHandler> _hidDeviceHandlerMock;
         private readonly Mock<IStatusReportService> _statusReportServiceMock;
         private readonly Mock<HidStream> _hidStreamMock;

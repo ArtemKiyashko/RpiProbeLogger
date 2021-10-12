@@ -41,6 +41,10 @@ namespace RpiProbeLogger.Extensions
                 return muSettings.CreateHumidity();
             });
 
+            services.AddTransient<ISenseIMUService, SenseIMUService>();
+            services.AddTransient<ISenseHumidityService, SenseHumidityService>();
+            services.AddTransient<ISensePressureService, SensePressureService>();
+
             services.AddTransient<ISenseService, SenseService>();
             return services;
         }

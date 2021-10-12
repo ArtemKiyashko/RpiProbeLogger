@@ -15,7 +15,7 @@ namespace ReportServiceTests
     public class ReportServiceTests
     {
         private readonly IFixture _fixture;
-        private readonly ReportService _reportService;
+        private readonly IReportService _reportService;
         private readonly Mock<IStatusReportService> _statusReportServiceMock;
         private readonly Mock<IReportFileHandler> _reportFileHandlerMock;
 

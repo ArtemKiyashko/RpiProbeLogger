@@ -14,7 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{62E5F685
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportServiceTests", "ReportServiceTests\ReportServiceTests.csproj", "{69CECD2E-25F8-49F5-97EB-FC6EF7A206D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemperServiceTests", "TemperServiceTests\TemperServiceTests.csproj", "{42D103ED-3C1E-4D53-AF2A-A46F861C2E9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemperServiceTests", "TemperServiceTests\TemperServiceTests.csproj", "{42D103ED-3C1E-4D53-AF2A-A46F861C2E9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenseServiceTests", "SenseServiceTests\SenseServiceTests.csproj", "{0F42C61E-8208-42A3-8705-548FF27D520C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +36,10 @@ Global
 		{42D103ED-3C1E-4D53-AF2A-A46F861C2E9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42D103ED-3C1E-4D53-AF2A-A46F861C2E9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42D103ED-3C1E-4D53-AF2A-A46F861C2E9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F42C61E-8208-42A3-8705-548FF27D520C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F42C61E-8208-42A3-8705-548FF27D520C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F42C61E-8208-42A3-8705-548FF27D520C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F42C61E-8208-42A3-8705-548FF27D520C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +47,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{69CECD2E-25F8-49F5-97EB-FC6EF7A206D2} = {62E5F685-8A4F-4073-93FB-BC069BCDEB43}
 		{42D103ED-3C1E-4D53-AF2A-A46F861C2E9A} = {62E5F685-8A4F-4073-93FB-BC069BCDEB43}
+		{0F42C61E-8208-42A3-8705-548FF27D520C} = {62E5F685-8A4F-4073-93FB-BC069BCDEB43}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {412811E4-9BF6-458B-B46B-7A79F2DD0D9F}
