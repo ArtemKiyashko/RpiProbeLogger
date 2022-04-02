@@ -53,7 +53,7 @@ namespace ReportServiceTests
 
         [Theory]
         [AutoData]
-        public void ShouldShowErrorStatus_IfException(GpsModuleResponse gpsModuleResponse) 
+        public void ShouldShowErrorStatus_IfException(GpsModuleResponse gpsModuleResponse)
         {
             _reportFileHandlerMock.Setup(handler => handler.WriteRecord(It.IsAny<ReportModel>())).Throws<Exception>();
             _reportService.WriteReport(null, gpsModuleResponse, null);

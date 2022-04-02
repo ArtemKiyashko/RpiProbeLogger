@@ -1,11 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Sensors.Models;
-using Sense.RTIMU;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 
 namespace RpiProbeLogger.Sensors.Services
 {

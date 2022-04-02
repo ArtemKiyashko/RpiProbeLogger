@@ -2,10 +2,8 @@
 using RpiProbeLogger.Communication.Models;
 using RpiProbeLogger.Led.Services;
 using System;
-using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace RpiProbeLogger.Communication.Commands

@@ -1,14 +1,9 @@
-﻿using CsvHelper;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using RpiProbeLogger.Communication.Models;
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Reports.Models;
 using RpiProbeLogger.Sensors.Models;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Text;
 
 namespace RpiProbeLogger.Reports.Services
 {
@@ -21,7 +16,7 @@ namespace RpiProbeLogger.Reports.Services
         public bool ReportFileCreated { get; private set; }
 
         public ReportService(
-            ILogger<ReportService> logger, 
+            ILogger<ReportService> logger,
             IStatusReportService statusReportService,
             IReportFileHandler reportFileHandler)
         {

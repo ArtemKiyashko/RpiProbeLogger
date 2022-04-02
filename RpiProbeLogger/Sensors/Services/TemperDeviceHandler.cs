@@ -4,8 +4,6 @@ using RpiProbeLogger.Sensors.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RpiProbeLogger.Sensors.Services
 {
@@ -18,7 +16,7 @@ namespace RpiProbeLogger.Sensors.Services
         private HidStream _bulkStream;
 
         public TemperDeviceHandler(
-            int productId, 
+            int productId,
             int vendorId,
             IStatusReportService statusReportService)
         {

@@ -1,9 +1,4 @@
 ﻿using HidSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RpiProbeLogger.Sensors.Services
 {
@@ -25,6 +20,6 @@ namespace RpiProbeLogger.Sensors.Services
             return bulkStream;
         }
 
-        public static bool DeviceReady(HidStream controlStream, HidStream bulkStream) => controlStream is not null && bulkStream is not null; 
+        public static bool DeviceReady(HidStream controlStream, HidStream bulkStream) => controlStream is not null && bulkStream is not null;
     }
 }

@@ -1,12 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using RpiProbeLogger.Helpers;
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Sensors.Services;
 using Sense.RTIMU;
-using System;
-using System.Collections.Generic;
 using System.IO.Ports;
-using System.Text;
 
 namespace RpiProbeLogger.Extensions
 {
@@ -28,15 +24,18 @@ namespace RpiProbeLogger.Extensions
         public static IServiceCollection AddSensorDataServices(this IServiceCollection services)
         {
             services.AddSingleton<RTIMUSettings>((_) => RTIMUSettings.CreateDefault());
-            services.AddSingleton<RTIMU>((provider) => {
+            services.AddSingleton<RTIMU>((provider) =>
+            {
                 var muSettings = provider.GetService<RTIMUSettings>();
                 return muSettings.CreateIMU();
             });
-            services.AddSingleton<RTPressure>((provider) => {
+            services.AddSingleton<RTPressure>((provider) =>
+            {
                 var muSettings = provider.GetService<RTIMUSettings>();
                 return muSettings.CreatePressure();
             });
-            services.AddSingleton<RTHumidity>((provider) => {
+            services.AddSingleton<RTHumidity>((provider) =>
+            {
                 var muSettings = provider.GetService<RTIMUSettings>();
                 return muSettings.CreateHumidity();
             });
@@ -51,7 +50,8 @@ namespace RpiProbeLogger.Extensions
 
         public static IServiceCollection AddTemper(this IServiceCollection services, int? productId = null, int? vendorId = null)
         {
-            services.AddSingleton<IHidDeviceHandler, TemperDeviceHandler>((provider) => {
+            services.AddSingleton<IHidDeviceHandler, TemperDeviceHandler>((provider) =>
+            {
                 var statusReportService = provider.GetRequiredService<IStatusReportService>();
                 var deviceHandler = new TemperDeviceHandler(productId ?? 0x2107, vendorId ?? 0x413D, statusReportService);
                 deviceHandler.OpenDevice();

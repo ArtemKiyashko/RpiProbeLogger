@@ -1,8 +1,5 @@
 ﻿using RpiProbeLogger.Communication.Models;
-using RpiProbeLogger.Reports.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RpiProbeLogger.Reports.Services
 {

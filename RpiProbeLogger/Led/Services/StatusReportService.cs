@@ -1,13 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
-using RpiProbeLogger.Communication.Models;
 using RpiProbeLogger.Interfaces;
-using RpiProbeLogger.Sensors.Models;
 using Sense.Led;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 
 namespace RpiProbeLogger.Led.Services
 {

@@ -1,10 +1,7 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using RpiProbeLogger.Interfaces;
 using Sense.Led;
-using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 
 namespace RpiProbeLogger.Sensors.Models
 {
@@ -15,14 +12,14 @@ namespace RpiProbeLogger.Sensors.Models
         }
 
         public SenseResponse(
-            Vector3? fusionPose, 
-            Quaternion? fusionQPose, 
-            Vector3? gyro, 
-            Vector3? accel, 
-            Vector3? compass, 
-            float? pressure, 
-            float? pressureTemperature, 
-            float? humidity, 
+            Vector3? fusionPose,
+            Quaternion? fusionQPose,
+            Vector3? gyro,
+            Vector3? accel,
+            Vector3? compass,
+            float? pressure,
+            float? pressureTemperature,
+            float? humidity,
             float? humidityTemperature)
         {
             FusionPose = fusionPose;
@@ -58,7 +55,7 @@ namespace RpiProbeLogger.Sensors.Models
                                 HumidityTemperature.HasValue;
 
         [Ignore]
-        public Cell StatusPosition => new(0,2);
+        public Cell StatusPosition => new(0, 2);
 
         public override string ToString()
         {

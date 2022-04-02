@@ -1,6 +1,5 @@
 using AutoFixture;
 using AutoFixture.AutoMoq;
-using AutoFixture.Xunit2;
 using Moq;
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Sensors.Models;
@@ -8,7 +7,6 @@ using RpiProbeLogger.Sensors.Services;
 using Sense.RTIMU;
 using SenseServiceTests.TestData;
 using System;
-using System.Numerics;
 using Xunit;
 
 namespace SenseServiceTests

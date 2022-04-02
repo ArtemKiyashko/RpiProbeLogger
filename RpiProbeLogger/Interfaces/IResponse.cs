@@ -1,8 +1,4 @@
-﻿using CsvHelper.Configuration.Attributes;
-using Sense.Led;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Sense.Led;
 
 namespace RpiProbeLogger.Interfaces
 {

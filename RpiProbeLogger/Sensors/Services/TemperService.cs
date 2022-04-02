@@ -2,10 +2,6 @@
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Sensors.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RpiProbeLogger.Sensors.Services
 {

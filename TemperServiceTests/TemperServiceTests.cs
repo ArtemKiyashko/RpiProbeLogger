@@ -1,15 +1,11 @@
 using AutoFixture;
 using AutoFixture.AutoMoq;
-using AutoFixture.Xunit2;
-using FluentAssertions;
 using HidSharp;
 using Moq;
-using RpiProbeLogger.Interfaces;
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Sensors.Models;
 using RpiProbeLogger.Sensors.Services;
 using System;
-using System.IO;
 using Xunit;
 
 namespace TemperServiceTests

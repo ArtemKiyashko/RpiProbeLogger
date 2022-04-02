@@ -2,9 +2,7 @@
 using RpiProbeLogger.Interfaces;
 using Sense.Led;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 
 namespace RpiProbeLogger.Reports.Models
 {
@@ -15,21 +13,21 @@ namespace RpiProbeLogger.Reports.Models
         }
 
         public ReportModel(
-            string latitude, 
-            string longitude, 
-            DateTime? dateTimeUtc, 
-            double? altitude, 
-            double? speed, 
-            double? course, 
-            Vector3? fusionPose, 
-            Quaternion? fusionQPose, 
-            Vector3? gyro, 
-            Vector3? accel, 
-            Vector3? compass, 
-            float? pressure, 
-            float? pressureTemperature, 
-            float? humidity, 
-            float? humidityTemperature, 
+            string latitude,
+            string longitude,
+            DateTime? dateTimeUtc,
+            double? altitude,
+            double? speed,
+            double? course,
+            Vector3? fusionPose,
+            Quaternion? fusionQPose,
+            Vector3? gyro,
+            Vector3? accel,
+            Vector3? compass,
+            float? pressure,
+            float? pressureTemperature,
+            float? humidity,
+            float? humidityTemperature,
             double? outsideTemperature)
         {
             Latitude = latitude;
@@ -72,6 +70,6 @@ namespace RpiProbeLogger.Reports.Models
                                 !string.IsNullOrEmpty(Longitude);
 
         [Ignore]
-        public Cell StatusPosition => new Cell(0,4);
+        public Cell StatusPosition => new Cell(0, 4);
     }
 }

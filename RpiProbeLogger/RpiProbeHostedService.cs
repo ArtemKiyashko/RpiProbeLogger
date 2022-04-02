@@ -2,15 +2,10 @@
 using Microsoft.Extensions.Logging;
 using RpiProbeLogger.Communication.Commands;
 using RpiProbeLogger.Communication.Models;
-using RpiProbeLogger.Helpers;
 using RpiProbeLogger.Reports.Services;
 using RpiProbeLogger.Sensors.Services;
-using Sense.RTIMU;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO.Ports;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,7 +43,7 @@ namespace RpiProbeLogger
         public Task StartAsync(CancellationToken cancellationToken)
         {
             var gpsStatus = _gpsModuleStatusCommand.GetStatus();
-            
+
             if (gpsStatus?.Enabled == false)
                 _gpsModuleStatusCommand.SetStatus(
                         new GpsModuleStatusResponse
