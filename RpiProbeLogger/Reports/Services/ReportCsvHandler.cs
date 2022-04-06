@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
 using RpiProbeLogger.Communication.Models;
 using System.Globalization;
@@ -32,8 +33,7 @@ namespace RpiProbeLogger.Reports.Services
                 AutoFlush = true
             };
 
-            _csvWriter = new CsvWriter(_streamWriter, CultureInfo.InvariantCulture);
-            _csvWriter.Configuration.NewLine = CsvHelper.Configuration.NewLine.CRLF;
+            _csvWriter = new CsvWriter(_streamWriter, new CsvConfiguration(CultureInfo.InvariantCulture));
             _csvWriter.WriteHeader<T>();
             _csvWriter.NextRecord();
 
