@@ -27,7 +27,7 @@ namespace RpiProbeLogger.Sensors.Models
                                 HumidityTemperature.HasValue;
 
         [Ignore]
-        public Cell StatusPosition { get; } = new(0, 2);
+        public Cell StatusPosition { get { return new(0, 2); } }
 
         public override string ToString()
         {

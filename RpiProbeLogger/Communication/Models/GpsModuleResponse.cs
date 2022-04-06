@@ -17,6 +17,6 @@ namespace RpiProbeLogger.Communication.Models
         public bool Status => DateTimeUtc.HasValue;
 
         [Ignore]
-        public Cell StatusPosition { get; } = new Cell(0, 1);
+        public Cell StatusPosition { get { return new(0, 1); } }
     }
 }

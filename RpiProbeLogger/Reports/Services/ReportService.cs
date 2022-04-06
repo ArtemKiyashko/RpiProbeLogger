@@ -3,6 +3,7 @@ using RpiProbeLogger.Communication.Models;
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Reports.Models;
 using RpiProbeLogger.Sensors.Models;
+using Sense.Led;
 using System;
 
 namespace RpiProbeLogger.Reports.Services
