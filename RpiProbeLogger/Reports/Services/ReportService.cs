@@ -3,6 +3,7 @@ using RpiProbeLogger.Communication.Models;
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Reports.Models;
 using RpiProbeLogger.Sensors.Models;
+using Sense.Led;
 using System;
 
 namespace RpiProbeLogger.Reports.Services
@@ -39,7 +40,7 @@ namespace RpiProbeLogger.Reports.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error writing report");
-                _statusReportService.DisplayStatus<ReportModel>(new() { Status = false });
+                _statusReportService.DisplayStatus<ReportModel>(new() { Status = false, StatusPosition = new Cell(0, 4) });
             }
             return false;
         }
@@ -63,7 +64,8 @@ namespace RpiProbeLogger.Reports.Services
                 Humidity = senseResponse.Humidity,
                 HumidityTemperature = senseResponse.HumidityTemperature,
                 OutsideTemperature = outsideTemperatureResponse.OutsideTemperature,
-                Status = true
+                Status = true,
+                StatusPosition = new Cell(0, 4)
             };
     }
 }

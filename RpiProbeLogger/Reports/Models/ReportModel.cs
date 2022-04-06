@@ -28,6 +28,6 @@ namespace RpiProbeLogger.Reports.Models
         public bool Status { get; init; } = true;
 
         [Ignore]
-        public Cell StatusPosition { get; } = new Cell(0, 4);
+        public Cell StatusPosition { get; init; } = new Cell(0, 4);
     }
 }
