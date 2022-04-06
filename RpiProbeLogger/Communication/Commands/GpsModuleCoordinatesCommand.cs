@@ -2,10 +2,8 @@
 using RpiProbeLogger.Communication.Models;
 using RpiProbeLogger.Led.Services;
 using System;
-using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
-using System.Text;
 
 namespace RpiProbeLogger.Communication.Commands
 {
@@ -84,7 +82,8 @@ namespace RpiProbeLogger.Communication.Commands
                 .Split(',');
 
         private GpsModuleResponse FormatResponse(string[] parsedResponse) =>
-            new GpsModuleResponse {
+            new GpsModuleResponse
+            {
                 Latitude = $"{parsedResponse[5]}{double.Parse(parsedResponse[4]) / 100}",
                 Longitude = $"{parsedResponse[7]}{double.Parse(parsedResponse[6]) / 100}",
                 DateTimeUtc = DateTime.ParseExact($"{parsedResponse[8]} {parsedResponse[9]}", "ddMMyy HHmmss.f", null),

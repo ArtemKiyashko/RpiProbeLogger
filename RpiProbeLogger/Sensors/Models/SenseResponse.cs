@@ -1,24 +1,47 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using RpiProbeLogger.Interfaces;
 using Sense.Led;
-using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 
 namespace RpiProbeLogger.Sensors.Models
 {
-    public class SenseResponse : IResponse
+    public record SenseResponse : IResponse
     {
-        public Vector3? FusionPose { get; set; }
-        public Quaternion? FusionQPose { get; set; }
-        public Vector3? Gyro { get; set; }
-        public Vector3? Accel { get; set; }
-        public Vector3? Compass { get; set; }
-        public float? Pressure { get; set; }
-        public float? PressureTemperature { get; set; }
-        public float? Humidity { get; set; }
-        public float? HumidityTemperature { get; set; }
+        public SenseResponse()
+        {
+        }
+
+        public SenseResponse(
+            Vector3? fusionPose,
+            Quaternion? fusionQPose,
+            Vector3? gyro,
+            Vector3? accel,
+            Vector3? compass,
+            float? pressure,
+            float? pressureTemperature,
+            float? humidity,
+            float? humidityTemperature)
+        {
+            FusionPose = fusionPose;
+            FusionQPose = fusionQPose;
+            Gyro = gyro;
+            Accel = accel;
+            Compass = compass;
+            Pressure = pressure;
+            PressureTemperature = pressureTemperature;
+            Humidity = humidity;
+            HumidityTemperature = humidityTemperature;
+        }
+
+        public Vector3? FusionPose { get; init; }
+        public Quaternion? FusionQPose { get; init; }
+        public Vector3? Gyro { get; init; }
+        public Vector3? Accel { get; init; }
+        public Vector3? Compass { get; init; }
+        public float? Pressure { get; init; }
+        public float? PressureTemperature { get; init; }
+        public float? Humidity { get; init; }
+        public float? HumidityTemperature { get; init; }
 
         [Ignore]
         public bool Status => FusionPose.HasValue &&
@@ -32,7 +55,7 @@ namespace RpiProbeLogger.Sensors.Models
                                 HumidityTemperature.HasValue;
 
         [Ignore]
-        public Cell StatusPosition => new Cell(0,2);
+        public Cell StatusPosition => new(0, 2);
 
         public override string ToString()
         {

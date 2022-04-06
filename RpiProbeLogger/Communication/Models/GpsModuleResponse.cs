@@ -2,8 +2,6 @@
 using RpiProbeLogger.Interfaces;
 using Sense.Led;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RpiProbeLogger.Communication.Models
 {

@@ -1,26 +1,23 @@
 ﻿using Microsoft.Extensions.Logging;
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Sensors.Models;
-using Sense.RTIMU;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 
 namespace RpiProbeLogger.Sensors.Services
 {
-    public class SenseService
+    public class SenseService : ISenseService
     {
         private readonly ILogger<SenseService> _logger;
-        private readonly RTIMU _senseCommon;
-        private readonly RTPressure _sensePressure;
-        private readonly RTHumidity _senseHumidity;
+        private readonly ISenseIMUService _senseCommon;
+        private readonly ISensePressureService _sensePressure;
+        private readonly ISenseHumidityService _senseHumidity;
         private readonly IStatusReportService _statusReportService;
 
         public SenseService(ILogger<SenseService> logger,
-            RTIMU senseCommon,
-            RTPressure sensePressure,
-            RTHumidity senseHumidity,
+            ISenseIMUService senseCommon,
+            ISensePressureService sensePressure,
+            ISenseHumidityService senseHumidity,
             IStatusReportService statusReportService)
         {
             _logger = logger;
@@ -32,13 +29,12 @@ namespace RpiProbeLogger.Sensors.Services
 
         public SenseResponse GetSensorsData()
         {
-            var response = new SenseResponse();
             try
             {
                 var imu = _senseCommon.GetData();
                 var pressure = _sensePressure.Read();
                 var humidity = _senseHumidity.Read();
-                response = new SenseResponse
+                var response = new SenseResponse
                 {
                     FusionPose = imu.FusionPoseValid ? imu.FusionPose : (Vector3?)null,
                     FusionQPose = imu.FusionQPoseValid ? imu.FusionQPose : (Quaternion?)(null),
@@ -56,7 +52,7 @@ namespace RpiProbeLogger.Sensors.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error reading Sense data");
-                _statusReportService.DisplayStatus(response);
+                _statusReportService.DisplayStatus<SenseResponse>(new());
             }
             return null;
         }
