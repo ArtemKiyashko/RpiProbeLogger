@@ -5,20 +5,18 @@ using System;
 
 namespace RpiProbeLogger.Communication.Models
 {
-    public class GpsModuleResponse : IResponse
+    public readonly record struct GpsModuleResponse(
+        string Latitude,
+        string Longitude,
+        DateTime? DateTimeUtc,
+        double Altitude,
+        double Speed,
+        double Course) : IResponse
     {
-        public string Latitude { get; set; }
-        public string Longitude { get; set; }
-        public DateTime DateTimeUtc { get; set; }
-        public double Altitude { get; set; }
-        public double Speed { get; set; }
-        public double Course { get; set; }
+        [Ignore]
+        public bool Status => DateTimeUtc.HasValue;
 
         [Ignore]
-        public bool Status => !string.IsNullOrEmpty(Latitude) &&
-                                !string.IsNullOrEmpty(Longitude);
-
-        [Ignore]
-        public Cell StatusPosition => new Cell(0, 1);
+        public Cell StatusPosition { get; } = new Cell(0, 1);
     }
 }

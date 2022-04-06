@@ -58,13 +58,13 @@ namespace RpiProbeLogger
                     return Task.CompletedTask;
 
                 var gpsData = _gpsModuleCoordinatesCommand.GetGpsData();
-                if (gpsData is not null || _reportService.ReportFileCreated)
+                if (gpsData.Status || _reportService.ReportFileCreated)
                 {
                     var senseData = _senseService.GetSensorsData();
                     var outsideTemperatureResponse = _temperService.ReadTemperature();
                     try
                     {
-                        _reportService.WriteReport(senseData, gpsData, outsideTemperatureResponse?.OutsideTemperature);
+                        _reportService.WriteReport(senseData, gpsData, outsideTemperatureResponse);
                     }
                     catch (Exception ex)
                     {

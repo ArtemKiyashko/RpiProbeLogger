@@ -27,7 +27,7 @@ namespace RpiProbeLogger.Sensors.Services
             {
                 _hidDeviceHandler.BulkStream.Write(TemperDeviceConst.TEMP_COMMAND);
                 var rawResult = _hidDeviceHandler.BulkStream.Read();
-                OutsideTemperatureResponse response = new(TemperServicePredicate.FormatResponse(rawResult));
+                OutsideTemperatureResponse response = new(rawResult.FormatResponse());
                 _statusReportService.DisplayStatus(response);
                 return response;
             }
@@ -36,7 +36,7 @@ namespace RpiProbeLogger.Sensors.Services
                 _logger.LogError("Error reading outside temperature", ex);
                 _statusReportService.DisplayStatus<OutsideTemperatureResponse>(new());
             }
-            return null;
+            return default;
         }
     }
 }

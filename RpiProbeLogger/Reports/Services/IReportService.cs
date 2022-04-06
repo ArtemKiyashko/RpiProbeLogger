@@ -7,6 +7,6 @@ namespace RpiProbeLogger.Reports.Services
     {
         bool ReportFileCreated { get; }
 
-        bool WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, double? outsideTemperature);
+        bool WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse);
     }
 }

@@ -1,0 +1,3 @@
+﻿Latitude,Longitude,DateTimeUtc,Altitude,Speed,Course,FusionPose,FusionQPose,Gyro,Accel,Compass,Pressure,PressureTemperature,Humidity,HumidityTemperature,OutsideTemperature
+Latitudea364d16b-fbef-4c5e-954b-a7fa7eb3ce31,Longitude6cc9b1a2-0760-40d3-968f-8969e17b714b,12/02/2020 11:29:14,166,44,70,"<84, 193, 33>",{X:214 Y:46 Z:215 W:86},"<223, 9, 31>","<218, 68, 187>","<233, 190, 29>",57,74,113,34,186
+Latitudea364d16b-fbef-4c5e-954b-a7fa7eb3ce31,Longitude6cc9b1a2-0760-40d3-968f-8969e17b714b,12/02/2020 11:29:14,166,44,70,"<84, 193, 33>",{X:214 Y:46 Z:215 W:86},"<223, 9, 31>","<218, 68, 187>","<233, 190, 29>",57,74,113,34,

@@ -12,6 +12,7 @@ namespace RpiProbeLogger.Reports.Services
         private StreamWriter _streamWriter;
         private CsvWriter _csvWriter;
         private readonly ILogger<ReportCsvHandler> _logger;
+        private string _fileName;
 
         public ReportCsvHandler(ILogger<ReportCsvHandler> logger)
         {
@@ -20,24 +21,20 @@ namespace RpiProbeLogger.Reports.Services
 
         public bool CreateFile<T>(GpsModuleResponse gpsModuleResponse)
         {
-            var fileName = $"{gpsModuleResponse.DateTimeUtc.Date:ddMMyyyy}.csv";
+            _fileName = $"{gpsModuleResponse.DateTimeUtc?.Date:ddMMyyyy}.csv";
 
-            if (File.Exists(fileName))
+            if (File.Exists(_fileName))
             {
-                _logger.LogInformation($"Report file chosen: {fileName}");
+                _logger.LogInformation($"Report file chosen: {_fileName}");
                 return true;
             }
 
-            _streamWriter = new StreamWriter(fileName, true)
-            {
-                AutoFlush = true
-            };
+            EnsureCsvWriterCreated();
 
-            _csvWriter = new CsvWriter(_streamWriter, new CsvConfiguration(CultureInfo.InvariantCulture));
             _csvWriter.WriteHeader<T>();
             _csvWriter.NextRecord();
 
-            _logger.LogInformation($"Report file created: {fileName}");
+            _logger.LogInformation($"Report file created: {_fileName}");
             return true;
         }
 
@@ -48,6 +45,7 @@ namespace RpiProbeLogger.Reports.Services
             _csvWriter = null;
             _streamWriter = null;
         }
+
         public void Dispose()
         {
             Dispose(true);
@@ -55,8 +53,18 @@ namespace RpiProbeLogger.Reports.Services
 
         public void WriteRecord<T>(T record)
         {
+            EnsureCsvWriterCreated();
             _csvWriter.WriteRecord(record);
             _csvWriter.NextRecord();
+        }
+
+        private void EnsureCsvWriterCreated()
+        {
+            if (_streamWriter is null)
+                _streamWriter = new StreamWriter(_fileName, true) { AutoFlush = true };
+
+            if (_csvWriter is null)
+                _csvWriter = new CsvWriter(_streamWriter, new CsvConfiguration(CultureInfo.InvariantCulture));
         }
     }
 }
