@@ -22,7 +22,7 @@ namespace ReportCsvHandlerTests
 
         [Theory]
         [AutoData]
-        public void ShoudWriteSuccessfullyNextRow_IfNoOutsideTemperatureWrittenBefore(ReportModel reportModel)
+        public void ShoudWriteSuccessfullyNextRow_IfFileHasBeenCreatedBeforeRestart(ReportModel reportModel)
         {
             GpsModuleResponse gpsModuleResponse = new() { DateTimeUtc = new DateTime(1986, 1, 1) };
             _reportCsvHandler.CreateFile<ReportModel>(gpsModuleResponse);
