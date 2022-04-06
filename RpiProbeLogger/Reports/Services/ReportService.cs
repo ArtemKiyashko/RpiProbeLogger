@@ -25,13 +25,13 @@ namespace RpiProbeLogger.Reports.Services
             _reportFileHandler = reportFileHandler;
         }
 
-        public bool WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, double? outsideTemperature)
+        public bool WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse)
         {
 
             try
             {
                 ReportFileCreated = _reportFileHandler.CreateFile<ReportModel>(gpsModuleResponse);
-                var record = MapToReportModel(senseResponse, gpsModuleResponse, outsideTemperature);
+                var record = MapToReportModel(senseResponse, gpsModuleResponse, outsideTemperatureResponse);
                 _reportFileHandler.WriteRecord(record);
                 _statusReportService.DisplayStatus(record);
                 return true;
@@ -44,7 +44,7 @@ namespace RpiProbeLogger.Reports.Services
             return false;
         }
 
-        private static ReportModel MapToReportModel(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, double? outsideTemperature)
+        private static ReportModel MapToReportModel(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse)
             => new()
             {
                 Latitude = gpsModuleResponse.Latitude,
@@ -62,7 +62,7 @@ namespace RpiProbeLogger.Reports.Services
                 PressureTemperature = senseResponse.PressureTemperature,
                 Humidity = senseResponse.Humidity,
                 HumidityTemperature = senseResponse.HumidityTemperature,
-                OutsideTemperature = outsideTemperature,
+                OutsideTemperature = outsideTemperatureResponse.OutsideTemperature,
                 Status = true
             };
     }
