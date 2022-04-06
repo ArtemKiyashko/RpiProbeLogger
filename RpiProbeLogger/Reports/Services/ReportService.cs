@@ -40,7 +40,7 @@ namespace RpiProbeLogger.Reports.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error writing report");
-                _statusReportService.DisplayStatus<ReportModel>(new() { Status = false, StatusPosition = new Cell(0, 4) });
+                _statusReportService.DisplayStatus<ReportModel>(new() { Status = false });
             }
             return false;
         }
@@ -64,8 +64,7 @@ namespace RpiProbeLogger.Reports.Services
                 Humidity = senseResponse.Humidity,
                 HumidityTemperature = senseResponse.HumidityTemperature,
                 OutsideTemperature = outsideTemperatureResponse.OutsideTemperature,
-                Status = true,
-                StatusPosition = new Cell(0, 4)
+                Status = true
             };
     }
 }

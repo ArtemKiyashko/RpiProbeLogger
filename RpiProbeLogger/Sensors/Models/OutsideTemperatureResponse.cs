@@ -11,6 +11,6 @@ namespace RpiProbeLogger.Sensors.Models
         public bool Status => OutsideTemperature.HasValue;
 
         [Ignore]
-        public Cell StatusPosition { get; } = new(0, 3);
+        public Cell StatusPosition { get { return new(0, 3); } }
     }
 }
