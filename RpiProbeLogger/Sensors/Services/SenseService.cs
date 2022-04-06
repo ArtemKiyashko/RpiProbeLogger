@@ -54,7 +54,7 @@ namespace RpiProbeLogger.Sensors.Services
                 _logger.LogError(ex, "Error reading Sense data");
                 _statusReportService.DisplayStatus<SenseResponse>(new());
             }
-            return null;
+            return default;
         }
     }
 }

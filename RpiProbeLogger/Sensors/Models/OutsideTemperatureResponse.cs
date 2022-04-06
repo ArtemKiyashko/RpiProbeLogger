@@ -4,23 +4,13 @@ using Sense.Led;
 
 namespace RpiProbeLogger.Sensors.Models
 {
-    public record OutsideTemperatureResponse : IResponse
+    public readonly record struct OutsideTemperatureResponse(
+        double? OutsideTemperature) : IResponse
     {
-        public OutsideTemperatureResponse()
-        {
-        }
-
-        public OutsideTemperatureResponse(double? outsideTemperature)
-        {
-            OutsideTemperature = outsideTemperature;
-        }
-
-        public double? OutsideTemperature { get; init; }
-
         [Ignore]
         public bool Status => OutsideTemperature.HasValue;
 
         [Ignore]
-        public Cell StatusPosition => new(0, 3);
+        public Cell StatusPosition { get; } = new(0, 3);
     }
 }

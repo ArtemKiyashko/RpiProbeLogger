@@ -37,7 +37,6 @@ namespace RpiProbeLogger.Communication.Commands
 
         public GpsModuleResponse GetGpsData()
         {
-            var response = new GpsModuleResponse();
             var command = $"{BASE_COMMAND}";
             _logger.LogInformation(command);
             _serialPort.WriteLine(command);
@@ -45,16 +44,16 @@ namespace RpiProbeLogger.Communication.Commands
             _logger.LogInformation(rawResponse);
             try
             {
-                response = FormatResponse(ParseCoordinatesResponse(rawResponse));
+                var response = FormatResponse(ParseCoordinatesResponse(rawResponse));
                 _statusReportService.DisplayStatus(response);
                 return response;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error parsing coordinates");
-                _statusReportService.DisplayStatus(response);
+                _statusReportService.DisplayStatus<GpsModuleResponse>(default);
             }
-            return null;
+            return default;
         }
 
         private void DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -72,7 +71,7 @@ namespace RpiProbeLogger.Communication.Commands
             }
         }
 
-        private string[] ParseCoordinatesResponse(string rawResponse) =>
+        private static string[] ParseCoordinatesResponse(string rawResponse) =>
             rawResponse
                 .Split(Environment.NewLine)
                 .FirstOrDefault(s => s.StartsWith("+CGNSSINFO:"))?
@@ -81,8 +80,8 @@ namespace RpiProbeLogger.Communication.Commands
                 .Trim()
                 .Split(',');
 
-        private GpsModuleResponse FormatResponse(string[] parsedResponse) =>
-            new GpsModuleResponse
+        private static GpsModuleResponse FormatResponse(string[] parsedResponse) =>
+            new()
             {
                 Latitude = $"{parsedResponse[5]}{double.Parse(parsedResponse[4]) / 100}",
                 Longitude = $"{parsedResponse[7]}{double.Parse(parsedResponse[6]) / 100}",

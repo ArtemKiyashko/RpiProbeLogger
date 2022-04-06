@@ -20,7 +20,7 @@ namespace RpiProbeLogger.Reports.Services
 
         public bool CreateFile<T>(GpsModuleResponse gpsModuleResponse)
         {
-            var fileName = $"{gpsModuleResponse.DateTimeUtc.Date:ddMMyyyy}.csv";
+            var fileName = $"{gpsModuleResponse.DateTimeUtc?.Date:ddMMyyyy}.csv";
 
             if (File.Exists(fileName))
             {

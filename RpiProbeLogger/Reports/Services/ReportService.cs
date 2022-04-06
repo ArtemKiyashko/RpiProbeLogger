@@ -39,7 +39,7 @@ namespace RpiProbeLogger.Reports.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error writing report");
-                _statusReportService.DisplayStatus<ReportModel>(new());
+                _statusReportService.DisplayStatus<ReportModel>(new() { Status = false });
             }
             return false;
         }
@@ -47,22 +47,23 @@ namespace RpiProbeLogger.Reports.Services
         private static ReportModel MapToReportModel(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, double? outsideTemperature)
             => new()
             {
-                Latitude = gpsModuleResponse?.Latitude,
-                Longitude = gpsModuleResponse?.Longitude,
-                DateTimeUtc = gpsModuleResponse?.DateTimeUtc,
-                Altitude = gpsModuleResponse?.Altitude,
-                Speed = gpsModuleResponse?.Speed,
-                Course = gpsModuleResponse?.Course,
-                FusionPose = senseResponse?.FusionPose,
-                FusionQPose = senseResponse?.FusionQPose,
-                Gyro = senseResponse?.Gyro,
-                Accel = senseResponse?.Accel,
-                Compass = senseResponse?.Compass,
-                Pressure = senseResponse?.Pressure,
-                PressureTemperature = senseResponse?.PressureTemperature,
-                Humidity = senseResponse?.Humidity,
-                HumidityTemperature = senseResponse?.HumidityTemperature,
-                OutsideTemperature = outsideTemperature
+                Latitude = gpsModuleResponse.Latitude,
+                Longitude = gpsModuleResponse.Longitude,
+                DateTimeUtc = gpsModuleResponse.DateTimeUtc,
+                Altitude = gpsModuleResponse.Altitude,
+                Speed = gpsModuleResponse.Speed,
+                Course = gpsModuleResponse.Course,
+                FusionPose = senseResponse.FusionPose,
+                FusionQPose = senseResponse.FusionQPose,
+                Gyro = senseResponse.Gyro,
+                Accel = senseResponse.Accel,
+                Compass = senseResponse.Compass,
+                Pressure = senseResponse.Pressure,
+                PressureTemperature = senseResponse.PressureTemperature,
+                Humidity = senseResponse.Humidity,
+                HumidityTemperature = senseResponse.HumidityTemperature,
+                OutsideTemperature = outsideTemperature,
+                Status = true
             };
     }
 }

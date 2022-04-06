@@ -30,12 +30,12 @@ namespace ReportServiceTests
         [Theory]
         [AutoData]
         public void ShouldCreateReportRow_GpsDataIsNull(SenseResponse senseResponse, double? outsideTemperature) =>
-            Assert.True(_reportService.WriteReport(senseResponse, null, outsideTemperature));
+            Assert.True(_reportService.WriteReport(senseResponse, default, outsideTemperature));
 
         [Theory]
         [AutoData]
         public void ShouldCreateReportRow_SenseDataIsNull(GpsModuleResponse gpsModuleResponse, double? outsideTemperature) =>
-            Assert.True(_reportService.WriteReport(null, gpsModuleResponse, outsideTemperature));
+            Assert.True(_reportService.WriteReport(default, gpsModuleResponse, outsideTemperature));
 
         [Theory]
         [AutoData]
@@ -49,14 +49,14 @@ namespace ReportServiceTests
 
         [Fact]
         public void ShouldCreateReportRow_AllDataNull() =>
-            Assert.True(_reportService.WriteReport(null, null, null));
+            Assert.True(_reportService.WriteReport(default, default, null));
 
         [Theory]
         [AutoData]
         public void ShouldShowErrorStatus_IfException(GpsModuleResponse gpsModuleResponse)
         {
             _reportFileHandlerMock.Setup(handler => handler.WriteRecord(It.IsAny<ReportModel>())).Throws<Exception>();
-            _reportService.WriteReport(null, gpsModuleResponse, null);
+            _reportService.WriteReport(default, gpsModuleResponse, null);
             _statusReportServiceMock.Verify(r => r.DisplayStatus(It.Is<ReportModel>(r => !r.Status)), Times.Once);
         }
 
@@ -64,7 +64,7 @@ namespace ReportServiceTests
         [AutoData]
         public void ShouldShowSuccessStatus_IfNoException(GpsModuleResponse gpsModuleResponse)
         {
-            _reportService.WriteReport(null, gpsModuleResponse, null);
+            _reportService.WriteReport(default, gpsModuleResponse, null);
             _statusReportServiceMock.Verify(r => r.DisplayStatus(It.Is<ReportModel>(r => r.Status)), Times.Once);
         }
     }
