@@ -18,7 +18,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemperServiceTests", "Tempe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenseServiceTests", "SenseServiceTests\SenseServiceTests.csproj", "{0F42C61E-8208-42A3-8705-548FF27D520C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportCsvHandlerTests", "ReportCsvHandlerTests\ReportCsvHandlerTests.csproj", "{41A454FB-ACC2-4D81-AC6B-0E03758AB8A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportCsvHandlerTests", "ReportCsvHandlerTests\ReportCsvHandlerTests.csproj", "{41A454FB-ACC2-4D81-AC6B-0E03758AB8A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpiProbeLogger.BusModels", "RpiProbeLogger.BusModels\RpiProbeLogger.BusModels.csproj", "{3C50ABFF-8550-4FCE-A56A-B6026B172582}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpiProbeLogger.TerminalGui", "RpiProbeLogger.TerminalGui\RpiProbeLogger.TerminalGui.csproj", "{69159BA2-AB29-41E8-BD95-44418B839EE0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +50,14 @@ Global
 		{41A454FB-ACC2-4D81-AC6B-0E03758AB8A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41A454FB-ACC2-4D81-AC6B-0E03758AB8A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41A454FB-ACC2-4D81-AC6B-0E03758AB8A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C50ABFF-8550-4FCE-A56A-B6026B172582}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C50ABFF-8550-4FCE-A56A-B6026B172582}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C50ABFF-8550-4FCE-A56A-B6026B172582}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C50ABFF-8550-4FCE-A56A-B6026B172582}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69159BA2-AB29-41E8-BD95-44418B839EE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69159BA2-AB29-41E8-BD95-44418B839EE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69159BA2-AB29-41E8-BD95-44418B839EE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69159BA2-AB29-41E8-BD95-44418B839EE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
