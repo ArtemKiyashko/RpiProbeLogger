@@ -7,6 +7,8 @@ using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Reports.Services;
 using System.Threading.Tasks;
 using RpiProbeLogger.BusModels;
+using Microsoft.Extensions.Configuration;
+using RpiProbeLogger.Bus.Telemetry;
 
 namespace RpiProbeLogger
 {
@@ -17,22 +19,19 @@ namespace RpiProbeLogger
             var host = new HostBuilder()
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<TestHostedService>();
-                    //services.AddHostedService<RpiProbeHostedService>();
-                    //services.AddSerialPort("/dev/ttyS0", 115200);
-                    //services.AddTransient<GpsModuleStatusCommand>();
-                    //services.AddTransient<GpsModuleCoordinatesCommand>();
-                    //services.AddSensorDataServices();
-                    //services.AddTransient<IReportService, ReportService>();
-                    //services.AddSingleton<IStatusReportService, StatusReportService>();
-                    //services.AddTemper();
-                    //services.AddTransient<IReportFileHandler, ReportCsvHandler>();
+                    services.AddHostedService<RpiProbeHostedService>();
+                    services.AddSerialPort("/dev/ttyS0", 115200);
+                    services.AddTransient<GpsModuleStatusCommand>();
+                    services.AddTransient<GpsModuleCoordinatesCommand>();
+                    services.AddSensorDataServices();
+                    services.AddTemper();
+                    services.AddReportingServices(options => options.Port = 5557);
                 })
                 .ConfigureLogging(logConfig =>
                 {
                     logConfig.SetMinimumLevel(LogLevel.Information);
                     logConfig.AddConsole();
-                    logConfig.AddZeromMqLogger(Constants.BIND_ADDRESS);
+                    logConfig.AddZeromMqLogger(options => options.Port = 5556);
                 })
                 .Build();
             await host.RunAsync();

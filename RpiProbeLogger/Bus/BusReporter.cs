@@ -9,29 +9,21 @@ namespace RpiProbeLogger.Bus
     public class BusReporter : IBusReporter, IDisposable
     {
         private readonly PublisherSocket _publisherSocket;
-        public BusReporter(string bindAddress)
-        {
-            _publisherSocket = new PublisherSocket();
-            _publisherSocket.Bind(bindAddress);
-        }
+        public BusReporter(PublisherSocket publisherSocket) => _publisherSocket = publisherSocket;
 
-        public void Dispose()
-        {
-            _publisherSocket.Dispose();
-        }
+        public void BindPort(uint port) => _publisherSocket.Bind($"tcp://*:{port}");
 
-        public async Task<bool> Send<T>(T model, string topic)
+        public void Dispose() => _publisherSocket.Dispose();
+
+        public async Task<bool> Send<T>(T model)
         {
             var jsonModel = JsonSerializer.Serialize(model);
-            var sendTask = Task.Run(() => SendMessage(jsonModel, topic));
+            var sendTask = Task.Run(() => SendMessage(jsonModel));
             return await sendTask;
         }
 
-        private bool SendMessage(string jsonModel, string topic)
-        {
-            return _publisherSocket
-                .SendMoreFrame(topic)
+        private bool SendMessage(string jsonModel) => 
+            _publisherSocket
                 .TrySendFrame(TimeSpan.FromSeconds(1), jsonModel);
-        }
     }
 }

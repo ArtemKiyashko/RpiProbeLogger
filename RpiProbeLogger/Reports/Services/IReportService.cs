@@ -1,5 +1,7 @@
 ﻿using RpiProbeLogger.Communication.Models;
+using RpiProbeLogger.Reports.Models;
 using RpiProbeLogger.Sensors.Models;
+using System.Threading.Tasks;
 
 namespace RpiProbeLogger.Reports.Services
 {
@@ -7,6 +9,6 @@ namespace RpiProbeLogger.Reports.Services
     {
         bool ReportFileCreated { get; }
 
-        bool WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse);
+        Task<ReportModel> WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse);
     }
 }

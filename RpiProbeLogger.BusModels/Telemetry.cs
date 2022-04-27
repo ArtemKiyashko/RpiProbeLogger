@@ -2,7 +2,7 @@
 
 namespace RpiProbeLogger.BusModels
 {
-    public readonly record struct Report(
+    public readonly record struct Telemetry(
         string Latitude,
         string Longitude,
         DateTime? DateTimeUtc,

@@ -1,7 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using NetMQ.Sockets;
+using RpiProbeLogger.Bus;
+using RpiProbeLogger.Bus.Telemetry;
 using RpiProbeLogger.Led.Services;
+using RpiProbeLogger.Reports.Services;
 using RpiProbeLogger.Sensors.Services;
 using Sense.RTIMU;
+using System;
 using System.IO.Ports;
 
 namespace RpiProbeLogger.Extensions
@@ -58,6 +64,19 @@ namespace RpiProbeLogger.Extensions
                 return deviceHandler;
             });
             services.AddSingleton<ITemperService, TemperService>();
+            return services;
+        }
+
+        public static IServiceCollection AddReportingServices(this IServiceCollection services, Action<TelemetryReporterOptions> busOptions)
+        {
+            services.TryAddTransient<PublisherSocket>();
+            services.TryAddTransient<IBusReporter, BusReporter>();
+            services.AddTransient<ILedMatrix, LedMatrix>();
+            services.AddTransient<IReportService, ReportService>()
+                .Decorate<IReportService, TelemetryReporter>();
+            services.AddSingleton<IStatusReportService, StatusReportService>();
+            services.AddTransient<IReportFileHandler, ReportCsvHandler>();
+            services.Configure(busOptions);
             return services;
         }
     }

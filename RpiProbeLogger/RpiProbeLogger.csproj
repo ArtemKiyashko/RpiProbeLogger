@@ -10,6 +10,7 @@
     <PackageReference Include="HidSharp" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="NetMQ" Version="4.0.1.8" />
+    <PackageReference Include="Scrutor" Version="4.1.0" />
     <PackageReference Include="SenseHatNet" Version="0.0.7" />
     <PackageReference Include="SerialPortStream" Version="2.4.0" />
     <PackageReference Include="System.IO.Ports" Version="6.0.0" />

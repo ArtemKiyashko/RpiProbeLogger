@@ -9,7 +9,7 @@ namespace RpiProbeLogger.BusModels
 {
     public readonly record struct LogEntry(
         LogLevel LogLevel,
-        string UserMassage,
+        string UserMessage,
         string ExceptionMessage,
         string StackTrace);
 }
