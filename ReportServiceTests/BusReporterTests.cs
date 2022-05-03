@@ -19,7 +19,7 @@ namespace ReportServiceTests
             _fixture = new Fixture().Customize(new AutoMoqCustomization());
             _fixture.Register(() => new PublisherSocket());
             _busReporter = _fixture.Create<BusReporter>();
-            _busReporter.BindPort(3333);
+            _busReporter.BindPort(5557);
         }
 
         [Theory]

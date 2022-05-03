@@ -3,12 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RpiProbeLogger.Communication.Commands;
 using RpiProbeLogger.Extensions;
-using RpiProbeLogger.Led.Services;
-using RpiProbeLogger.Reports.Services;
 using System.Threading.Tasks;
-using RpiProbeLogger.BusModels;
-using Microsoft.Extensions.Configuration;
-using RpiProbeLogger.Bus.Telemetry;
 
 namespace RpiProbeLogger
 {

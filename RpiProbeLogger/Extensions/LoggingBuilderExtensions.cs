@@ -17,8 +17,9 @@ namespace RpiProbeLogger.Extensions
 
             builder.Services.TryAddTransient<PublisherSocket>();
             builder.Services.TryAddTransient<IBusReporter, BusReporter>();
-            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, BusLoggerProvider>());
+
             LoggerProviderOptions.RegisterProviderOptions<BusLoggerOptions, BusLoggerProvider>(builder.Services);
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, BusLoggerProvider>());
 
             return builder;
         }
