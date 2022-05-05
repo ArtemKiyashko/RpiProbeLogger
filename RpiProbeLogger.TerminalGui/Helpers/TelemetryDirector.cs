@@ -44,7 +44,6 @@ namespace RpiProbeLogger.TerminalGui.Helpers
                         .AddHumidityTemperature()
                         .AddOutsideTemperature()
                         .Build();
-            Refresh(new Telemetry() { Latitude = "N54.456", DateTimeUtc = DateTime.Now, OutsideTemperature = 38.12 });
         }
     }
 }

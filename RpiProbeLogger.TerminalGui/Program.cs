@@ -1,33 +1,41 @@
-﻿using NetMQ;
-using NetMQ.Sockets;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using RpiProbeLogger.TerminalGui.Helpers;
+using RpiProbeLogger.TerminalGui.Settings;
 using Terminal.Gui;
 
-Application.Init();
-
-var mainWindow = new Window("VOSTOK")
+namespace RpiProbeLogger.TerminalGui
 {
-    Width = Dim.Fill(),
-    Height = Dim.Fill(),
-    X = 0,
-    Y = 0,
-    ColorScheme = Colors.TopLevel
-};
-
-ITelemetryDirector telemetryDirector = new TelemetryDirector();
-telemetryDirector.Setup(mainWindow);
-
-Application.Top.Add(mainWindow);
-Application.Run();
-
-using (var subscriber = new SubscriberSocket())
-{
-    subscriber.Connect("tcp://127.0.0.1:5557");
-    subscriber.SubscribeToAnyTopic();
-
-    while (true)
+    class Program
     {
-        var msg = subscriber.ReceiveFrameString();
-        Console.WriteLine("From Publisher: {0}", msg);
+        private static IHost _host;
+
+        static void Main(string[] args)
+        {
+            _host = new HostBuilder()
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<TelemetryReceiverHostedService>();
+                    services.AddSingleton<ITelemetryDirector, TelemetryDirector>();
+                    services.AddSingleton<Window>(provider => provider.GetService<TelemetryWindow>());
+                    services.AddSingleton<TelemetryWindow>();
+                    services.Configure<TelemetryReceiverSettings>(options =>
+                    {
+                        options.Ip = "127.0.0.1";
+                        options.Port = 5557;
+                    });
+                })
+                .Build();
+
+            Application.Init();
+            Application.MainLoop.AddTimeout(TimeSpan.FromMilliseconds(200), (loop) => AppTick());
+            Application.Run(new MainWindow(_host, _host.Services.GetServices<Window>().ToArray()));
+        }
+
+        static bool AppTick()
+        {
+            Application.MainLoop.MainIteration();
+            return true;
+        }
     }
 }

@@ -4,6 +4,8 @@ using AutoFixture.Xunit2;
 using NetMQ.Sockets;
 using RpiProbeLogger.Bus;
 using RpiProbeLogger.BusModels;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -28,6 +30,19 @@ namespace ReportServiceTests
         {
             var result = await _busReporter.Send(model);
             Assert.True(result);
+        }
+
+        [Theory(Skip = "For manual tests")]
+        [AutoData]
+        public async Task ShouldSendModels_Successful(IList<Telemetry> models)
+        {
+            while (true)
+            foreach (var model in models)
+            {
+                var result = await _busReporter.Send(model);
+                Assert.True(result);
+                Thread.Sleep(1000);
+            }
         }
     }
 }
