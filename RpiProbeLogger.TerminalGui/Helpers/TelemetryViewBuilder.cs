@@ -8,9 +8,9 @@ namespace RpiProbeLogger.TerminalGui.Helpers
     public class TelemetryViewBuilder
     {
         private readonly IDictionary<ustring, Label> _views = new Dictionary<ustring, Label>();
-        private readonly Window _container;
+        private readonly View _container;
 
-        public TelemetryViewBuilder(Window container) =>
+        public TelemetryViewBuilder(View container) =>
             _container = container;
 
         public TelemetryViewBuilder AddLatitude()
@@ -79,7 +79,7 @@ namespace RpiProbeLogger.TerminalGui.Helpers
             return this;
         }
 
-        private void InjectField(Window root, string label)
+        private void InjectField(View root, string label)
         {
             var lastLabelView = _views.Count == 0 ? default : _views.Last();
             if (lastLabelView.Value is null)

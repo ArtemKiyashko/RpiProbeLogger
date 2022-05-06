@@ -16,15 +16,15 @@ namespace RpiProbeLogger.TerminalGui
 {
     public class TelemetryReceiverHostedService : IHostedService
     {
-        private readonly ITelemetryDirector _telemetryDirector;
+        private readonly IDirector<Telemetry> _telemetryDirector;
         private TelemetryReceiverSettings _settings;
         private readonly SubscriberSocket _subscriber = new();
         private string _fullAddress => $"tcp://{_settings.Ip}:{_settings.Port}";
 
         public TelemetryReceiverHostedService(
-            ITelemetryDirector telemetryDirector, 
+            IDirector<Telemetry> telemetryDirector, 
             IOptions<TelemetryReceiverSettings> options,
-            TelemetryWindow telemetryWindow)
+            TelemetryView telemetryWindow)
         {
             _telemetryDirector = telemetryDirector;
             _settings = options.Value;

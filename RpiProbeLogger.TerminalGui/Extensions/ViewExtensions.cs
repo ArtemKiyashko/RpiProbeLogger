@@ -6,11 +6,11 @@ namespace RpiProbeLogger.TerminalGui.Extensions
     public static class ViewExtensions
     {
 
-        public static KeyValuePair<ustring, Label> AddField(this View previous, string label, Window container)
+        public static KeyValuePair<ustring, Label> AddField(this View previous, string label, View container)
         {
             Label labelView;
 
-            if (previous is Window)
+            if (previous.Equals(container))
                 labelView = FirstLabel(label);
             else
                 labelView = previous.UnderLabel(label);

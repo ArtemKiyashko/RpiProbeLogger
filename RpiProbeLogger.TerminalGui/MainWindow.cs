@@ -14,15 +14,26 @@ namespace RpiProbeLogger.TerminalGui
     public class MainWindow : Toplevel
     {
         private readonly IHost _host;
+        private readonly TabView _tabView = new()
+        {
+            Width = Dim.Fill(),
+            Height = Dim.Fill(),
+            X = 0,
+            Y = 0
+        };
 
-        public MainWindow(IHost host, params Window[] windows) : base()
+        public MainWindow(IHost host, params View[] views) : base()
         {
             _host = host;
 
             Loaded += MainWindow_Loaded;
             Closing += MainWindow_Closing;
 
-            Add(windows);
+            foreach (var view in views)
+                _tabView.AddTab(new TabView.Tab(view.Id?.ToString(), view), false);
+
+            _tabView.SelectedTab = _tabView.Tabs.First();
+            Add(_tabView);
         }
 
         private void MainWindow_Closing(ToplevelClosingEventArgs obj) =>

@@ -9,7 +9,7 @@ using Terminal.Gui;
 
 namespace RpiProbeLogger.TerminalGui.Helpers
 {
-    public class TelemetryDirector : ITelemetryDirector
+    public class TelemetryDirector : IDirector<Telemetry>
     {
         private TelemetryViewBuilder _viewBuilder;
         private IDictionary<ustring, Label>? _view;
@@ -24,11 +24,12 @@ namespace RpiProbeLogger.TerminalGui.Helpers
                 {
                     var value = property.GetValue(telemetry);
                     field.Text = value?.ToString() ?? "NO DATA";
+                    field.SetNeedsDisplay();
                 }
             }
         }
 
-        public void Setup(Window container)
+        public void Setup(View container)
         {
             _viewBuilder = new TelemetryViewBuilder(container);
             _view = _viewBuilder
