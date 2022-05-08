@@ -6,6 +6,7 @@ using RpiProbeLogger.Bus;
 using Microsoft.Extensions.Logging.Configuration;
 using System;
 using NetMQ.Sockets;
+using Microsoft.Extensions.Configuration;
 
 namespace RpiProbeLogger.Extensions
 {
@@ -28,6 +29,13 @@ namespace RpiProbeLogger.Extensions
         {
             builder.AddZeromMqLogger();
             builder.Services.Configure(config);
+            return builder;
+        }
+
+        public static ILoggingBuilder AddZeromMqLogger(this ILoggingBuilder builder, IConfiguration configuration)
+        {
+            builder.AddZeromMqLogger();
+            builder.Services.Configure<BusLoggerOptions>(configuration.GetSection("BusLoggerOptions"));
             return builder;
         }
     }

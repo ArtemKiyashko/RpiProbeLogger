@@ -17,13 +17,17 @@ namespace RpiProbeLogger.Bus.Logger
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             if (!IsEnabled(logLevel)) return;
-            _busReporter.Send(
-                new LogEntry(
-                    logLevel, 
-                    formatter(state, exception), 
-                    exception?.Message, 
-                    exception?.StackTrace))
-                .GetAwaiter().GetResult();
+            try
+            {
+                _busReporter.Send(
+                    new LogEntry(
+                        logLevel,
+                        formatter(state, exception),
+                        exception?.Message,
+                        exception?.StackTrace))
+                    .GetAwaiter().GetResult();
+            }
+            catch { }
         }
     }
 }

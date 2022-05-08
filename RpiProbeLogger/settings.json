@@ -1,0 +1,8 @@
+{
+  "BusLoggerOptions": {
+    "Port": 5556
+  },
+  "TelemetryReporterOptions": {
+    "Port": 5557
+  }
+}

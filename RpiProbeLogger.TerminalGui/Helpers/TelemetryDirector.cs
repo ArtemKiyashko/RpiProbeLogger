@@ -14,9 +14,11 @@ namespace RpiProbeLogger.TerminalGui.Helpers
         private TelemetryViewBuilder _viewBuilder;
         private IDictionary<ustring, Label>? _view;
 
+        public event EventHandler OnRefresh;
+
         public void Refresh(Telemetry telemetry)
         {
-            if (_view is null) throw new ArgumentNullException("View not initialized. Run Setup() method first.");
+            if (_view is null) throw new ArgumentNullException(nameof(_view), "View not initialized. Run Setup() method first.");
 
             foreach (var property in typeof(Telemetry).GetProperties())
             {
@@ -24,9 +26,9 @@ namespace RpiProbeLogger.TerminalGui.Helpers
                 {
                     var value = property.GetValue(telemetry);
                     field.Text = value?.ToString() ?? "NO DATA";
-                    field.SetNeedsDisplay();
                 }
             }
+            OnRefresh?.Invoke(this, new());
         }
 
         public void Setup(View container)

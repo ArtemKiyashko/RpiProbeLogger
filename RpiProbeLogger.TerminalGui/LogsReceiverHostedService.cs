@@ -6,19 +6,18 @@ using RpiProbeLogger.TerminalGui.Settings;
 
 namespace RpiProbeLogger.TerminalGui
 {
-    public class TelemetryReceiverHostedService : BaseReceiver<Telemetry>, IHostedService
+    public class LogsReceiverHostedService : BaseReceiver<LogEntry>, IHostedService
     {
-        private TelemetryReceiverSettings _settings;
+        private LogsReceiverSettings _settings;
         private string _fullAddress => $"tcp://{_settings.Ip}:{_settings.Port}";
 
-        public TelemetryReceiverHostedService(
-            IDirector<Telemetry> telemetryDirector, 
-            IOptions<TelemetryReceiverSettings> options,
-            TelemetryView telemetryWindow) : base(telemetryDirector)
+        public LogsReceiverHostedService(
+            IDirector<LogEntry> logsDirector, 
+            IOptions<LogsReceiverSettings> options,
+            LogView logsWindow) : base(logsDirector)
         {
             _settings = options.Value;
-            _director.Setup(telemetryWindow);
-            _director.Refresh(default);
+            _director.Setup(logsWindow);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

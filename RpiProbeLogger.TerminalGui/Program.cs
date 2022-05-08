@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using RpiProbeLogger.BusModels;
 using RpiProbeLogger.TerminalGui.Helpers;
 using RpiProbeLogger.TerminalGui.Settings;
@@ -10,35 +12,46 @@ namespace RpiProbeLogger.TerminalGui
     class Program
     {
         private static IHost _host;
+        private static IConfiguration Configuration;
 
         static void Main(string[] args)
         {
             _host = new HostBuilder()
+                .ConfigureAppConfiguration((context, builder) => {
+                    builder.AddJsonFile("settings.json");
+                    builder.AddEnvironmentVariables();
+                    Configuration = builder.Build();
+                })
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<TelemetryReceiverHostedService>();
+                    services.AddHostedService<LogsReceiverHostedService>();
                     services.AddSingleton<IDirector<Telemetry>, TelemetryDirector>();
+                    services.AddSingleton<IDirector<LogEntry>, LogDirector>();
                     services.AddSingleton<View>(provider => provider.GetService<TelemetryView>());
                     services.AddSingleton<TelemetryView>();
                     services.AddSingleton<View>(provider => provider.GetService<LogView>());
                     services.AddSingleton<LogView>();
-                    services.Configure<TelemetryReceiverSettings>(options =>
-                    {
-                        options.Ip = "127.0.0.1";
-                        options.Port = 5557;
-                    });
+                    services.Configure<TelemetryReceiverSettings>(Configuration.GetSection("TelemetryReceiverSettings"));
+                    services.Configure<LogsReceiverSettings>(Configuration.GetSection("LogsReceiverSettings"));
+                    services.AddSingleton<MainWindow>();
+                })
+                .ConfigureLogging(logConfig =>
+                {
+                    logConfig.AddConsole();
                 })
                 .Build();
 
+            var telemetryDirector = _host.Services.GetRequiredService<IDirector<Telemetry>>();
+            var logDirector = _host.Services.GetRequiredService<IDirector<LogEntry>>();
+
+            telemetryDirector.OnRefresh += UiRefresh;
+            logDirector.OnRefresh += UiRefresh;
+
             Application.Init();
-            //Application.MainLoop.AddTimeout(TimeSpan.FromMilliseconds(200), (loop) => AppTick());
-            Application.Run(new MainWindow(_host, _host.Services.GetServices<View>().ToArray()));
+            Application.Run(_host.Services.GetRequiredService<MainWindow>());
         }
 
-        static bool AppTick()
-        {
-            Application.MainLoop.MainIteration();
-            return true;
-        }
+        private static void UiRefresh(object? sender, EventArgs e) => Application.DoEvents();
     }
 }

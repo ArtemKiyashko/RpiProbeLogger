@@ -22,7 +22,7 @@ namespace RpiProbeLogger.TerminalGui
             Y = 0
         };
 
-        public MainWindow(IHost host, params View[] views) : base()
+        public MainWindow(IHost host, IEnumerable<View> views) : base()
         {
             _host = host;
 
@@ -42,6 +42,6 @@ namespace RpiProbeLogger.TerminalGui
                 .GetAwaiter()
                 .GetResult();
 
-        private void MainWindow_Loaded() => Task.Run(() => _host.Run());
+        private void MainWindow_Loaded() => Task.Run(() => _host.RunAsync());
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NetMQ.Sockets;
 using RpiProbeLogger.Bus;
@@ -69,6 +70,20 @@ namespace RpiProbeLogger.Extensions
 
         public static IServiceCollection AddReportingServices(this IServiceCollection services, Action<TelemetryReporterOptions> busOptions)
         {
+            AddReportingServices(services);
+            services.Configure(busOptions);
+            return services;
+        }
+
+        public static IServiceCollection AddReportingServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            AddReportingServices(services);
+            services.Configure<TelemetryReporterOptions>(configuration.GetSection("TelemetryReporterOptions"));
+            return services;
+        }
+
+        private static void AddReportingServices(IServiceCollection services)
+        {
             services.TryAddTransient<PublisherSocket>();
             services.TryAddTransient<IBusReporter, BusReporter>();
             services.AddTransient<ILedMatrix, LedMatrix>();
@@ -76,8 +91,6 @@ namespace RpiProbeLogger.Extensions
                 .Decorate<IReportService, TelemetryReporter>();
             services.AddSingleton<IStatusReportService, StatusReportService>();
             services.AddTransient<IReportFileHandler, ReportCsvHandler>();
-            services.Configure(busOptions);
-            return services;
         }
     }
 }

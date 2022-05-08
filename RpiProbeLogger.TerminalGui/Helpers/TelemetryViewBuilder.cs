@@ -2,6 +2,7 @@
 using Terminal.Gui;
 using RpiProbeLogger.TerminalGui.Extensions;
 using RpiProbeLogger.BusModels;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RpiProbeLogger.TerminalGui.Helpers
 {
@@ -10,7 +11,7 @@ namespace RpiProbeLogger.TerminalGui.Helpers
         private readonly IDictionary<ustring, Label> _views = new Dictionary<ustring, Label>();
         private readonly View _container;
 
-        public TelemetryViewBuilder(View container) =>
+        public TelemetryViewBuilder([NotNull]View container) =>
             _container = container;
 
         public TelemetryViewBuilder AddLatitude()

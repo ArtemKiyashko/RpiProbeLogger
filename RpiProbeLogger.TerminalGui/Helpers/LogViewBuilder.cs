@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RpiProbeLogger.BusModels;
+using RpiProbeLogger.TerminalGui.Extensions;
+using System.Diagnostics.CodeAnalysis;
 using Terminal.Gui;
 
 namespace RpiProbeLogger.TerminalGui.Helpers
@@ -10,10 +8,25 @@ namespace RpiProbeLogger.TerminalGui.Helpers
     public class LogViewBuilder
     {
         private readonly View _container;
+        private LogLabel _logView;
 
-        public LogViewBuilder(View container) =>
-            _container = container;
+        public LogViewBuilder([NotNull]View container) => _container = container;
 
-        public Label Build() => new();
+        public LogViewBuilder AddLogView()
+        {
+            _logView = new LogLabel()
+            {
+                X = 0,
+                Y = 0,
+                Width = Dim.Fill(),
+                Height = Dim.Fill()
+            };
+           
+            _container.Add(_logView);
+            return this;
+        }
+
+        public LogLabel Build() => _logView;
+
     }
 }

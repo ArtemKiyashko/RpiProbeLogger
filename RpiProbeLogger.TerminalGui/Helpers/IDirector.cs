@@ -11,5 +11,7 @@ namespace RpiProbeLogger.TerminalGui.Helpers
     {
         public void Setup(View container);
         public void Refresh(T telemetry);
+
+        public event EventHandler OnRefresh;
     }
 }
