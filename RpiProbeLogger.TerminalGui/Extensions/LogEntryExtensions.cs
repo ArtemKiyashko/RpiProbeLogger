@@ -13,7 +13,7 @@ namespace RpiProbeLogger.TerminalGui.Extensions
     public static class LogEntryExtensions
     {
         private static readonly ColorScheme _error = new() { Normal = new Terminal.Gui.Attribute(Color.Red, Color.Black) };
-        private static readonly ColorScheme _neutral = new() { Normal = new Terminal.Gui.Attribute(Color.White, Color.Black) };
+        private static readonly ColorScheme _neutral = Colors.TopLevel;
         public static ColorScheme GetColorScheme(this LogEntry logEntry) => logEntry.LogLevel switch
         {
             LogLevel.Error => _error,
