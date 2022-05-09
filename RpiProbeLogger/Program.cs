@@ -16,14 +16,14 @@ namespace RpiProbeLogger
             var host = new HostBuilder()
                 .ConfigureAppConfiguration((hostContext, builder) =>
                 {
-                    builder.AddJsonFile("settings.json");
+                    builder.AddJsonFile("settings.json", true);
                     builder.AddEnvironmentVariables();
                     Configuration = builder.Build();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<RpiProbeHostedService>();
-                    services.AddSerialPort("/dev/ttyS0", 115200);
+                    services.AddSerialPort(Configuration);
                     services.AddTransient<GpsModuleStatusCommand>();
                     services.AddTransient<GpsModuleCoordinatesCommand>();
                     services.AddSensorDataServices();

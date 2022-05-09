@@ -4,5 +4,12 @@
   },
   "TelemetryReporterOptions": {
     "Port": 5557
+  },
+  "SerialPortOptions": {
+    "PortName": "/dev/ttyS0",
+    "BaudRate": 115200,
+    "ReadTimeout": 500,
+    "WriteTimeout": 500,
+    "NewLine": "\r"
   }
 }

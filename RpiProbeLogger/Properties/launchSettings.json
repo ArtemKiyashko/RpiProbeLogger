@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "RpiProbeLogger": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "SerialPortOptions:PortName": "COM1"
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@ namespace RpiProbeLogger.TerminalGui
         {
             _host = new HostBuilder()
                 .ConfigureAppConfiguration((context, builder) => {
-                    builder.AddJsonFile("settings.json");
+                    builder.AddJsonFile("settings.json", true);
                     builder.AddEnvironmentVariables();
                     Configuration = builder.Build();
                 })
