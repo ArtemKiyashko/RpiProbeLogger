@@ -36,10 +36,6 @@ namespace RpiProbeLogger.TerminalGui
                     services.Configure<LogsReceiverSettings>(Configuration.GetSection("LogsReceiverSettings"));
                     services.AddSingleton<MainWindow>();
                 })
-                .ConfigureLogging(logConfig =>
-                {
-                    logConfig.AddConsole();
-                })
                 .Build();
 
             var telemetryDirector = _host.Services.GetRequiredService<IDirector<Telemetry>>();
