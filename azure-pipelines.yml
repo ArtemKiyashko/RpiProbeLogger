@@ -6,7 +6,8 @@ name: $(SourceBranchName)$(Rev:.r)
 jobs:
 - job: Build
   displayName: 'Build'
-  pool: ubuntu-latest
+  pool:
+    vmImage: 'ubuntu-latest'
   steps:
       - task: DotNetCoreCLI@2
         displayName: 'Run tests'
