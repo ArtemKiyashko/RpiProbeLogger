@@ -8,6 +8,10 @@ trigger:
     include:
       - RpiProbeLogger
       - RpiProbeLogger.BusModels
+      - ReportCsvHandlerTests
+      - SenseServiceTests
+      - TemperServiceTests
+      - ReportServiceTests
 
 stages:
 - stage: BuildAndTest
@@ -34,5 +38,4 @@ stages:
   displayName: 'RpiProbeLogger'
   jobs:
     - deployment: RpiProbeLogger
-      dependsOn: BuildAndTest
       environment: Home

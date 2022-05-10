@@ -29,4 +29,4 @@ stages:
   displayName: 'TerminalGui'
   jobs:
     - deployment: TerminalGui
-      dependsOn: BuildAndTest
+      environment: Home
