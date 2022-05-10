@@ -35,3 +35,4 @@ stages:
   jobs:
     - deployment: RpiProbeLogger
       dependsOn: BuildAndTest
+      environment: Home
