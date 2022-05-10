@@ -1,0 +1,37 @@
+name: RpiProbeLogger-$(SourceBranchName)$(Rev:.r)
+
+trigger:
+  tags:
+    include:
+      - release-*
+  paths:
+    include:
+      - RpiProbeLogger
+      - RpiProbeLogger.BusModels
+
+stages:
+- stage: BuildAndTest
+  displayName: 'Build and test'
+  jobs:
+  - job: BuildAndTest
+    displayName: 'Build and test'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+        - task: DotNetCoreCLI@2
+          displayName: 'Test'
+          inputs:
+            command: 'test'
+            projects: '**/*Tests.csproj'
+        - task: DotNetCoreCLI@2
+          displayName: 'Publish'
+          inputs:
+            command: 'publish'
+            publishWebProjects: false
+            projects: 'RpiProbeLogger/RpiProbeLogger.csproj'
+            arguments: '--self-contained -r linux-arm -f net6.0 -c Release'
+- stage: DeployRpiProbeLogger
+  displayName: 'RpiProbeLogger'
+  jobs:
+    - deployment: RpiProbeLogger
+      dependsOn: BuildAndTest

@@ -1,0 +1,32 @@
+name: TerminalGui-$(SourceBranchName)$(Rev:.r)
+
+trigger:
+  tags:
+    include:
+      - release-*
+  paths:
+    include:
+      - RpiProbeLogger.TerminalGui
+      - RpiProbeLogger.BusModels
+
+stages:
+- stage: BuildAndTest
+  displayName: 'Build and test'
+  jobs:
+  - job: BuildAndTest
+    displayName: 'Build and test'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+        - task: DotNetCoreCLI@2
+          displayName: 'Publish'
+          inputs:
+            command: 'publish'
+            publishWebProjects: false
+            projects: 'RpiProbeLogger.TerminalGui/RpiProbeLogger.TerminalGui.csproj'
+            arguments: '--self-contained -r linux-arm -f net6.0 -c Release'
+- stage: DeployTerminalGui
+  displayName: 'TerminalGui'
+  jobs:
+    - deployment: TerminalGui
+      dependsOn: BuildAndTest
