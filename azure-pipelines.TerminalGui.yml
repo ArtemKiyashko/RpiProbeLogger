@@ -1,14 +1,5 @@
 name: TerminalGui-$(SourceBranchName)$(Rev:.r)
 
-trigger:
-  tags:
-    include:
-      - release-*
-  paths:
-    include:
-      - RpiProbeLogger.TerminalGui
-      - RpiProbeLogger.BusModels
-
 stages:
 - stage: BuildAndTest
   displayName: 'Build and test'
