@@ -17,7 +17,10 @@ stages:
             projects: 'RpiProbeLogger.TerminalGui/RpiProbeLogger.TerminalGui.csproj'
             arguments: '--self-contained -r linux-arm -f net6.0 -c Release'
 - stage: DeployTerminalGui
-  displayName: 'TerminalGui'
+  displayName: 'Deploy'
   jobs:
-    - deployment: TerminalGui
+    - deployment: TerminalGuiHome
       environment: Home
+    - deployment: TerminalGuiVostok
+      dependsOn: TerminalGuiHome
+      environment: Vostok
