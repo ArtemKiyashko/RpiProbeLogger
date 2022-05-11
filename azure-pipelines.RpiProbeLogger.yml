@@ -28,12 +28,12 @@ stages:
             command: 'test'
             projects: '**/*Tests.csproj'
         - task: DotNetCoreCLI@2
-          displayName: 'Publish'
+          displayName: 'Build'
           inputs:
             command: 'publish'
             publishWebProjects: false
             projects: 'RpiProbeLogger/RpiProbeLogger.csproj'
-            arguments: '--self-contained -r linux-arm -f net6.0 -c Release'
+            arguments: '--self-contained -r linux-arm -f net6.0 -c Release -o $(Build.ArtifactStagingDirectory)'
 - stage: DeployRpiProbeLoggerHome
   displayName: 'Deploy Home'
   jobs:

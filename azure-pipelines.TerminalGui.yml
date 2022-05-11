@@ -19,12 +19,12 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
         - task: DotNetCoreCLI@2
-          displayName: 'Publish'
+          displayName: 'Build'
           inputs:
             command: 'publish'
             publishWebProjects: false
             projects: 'RpiProbeLogger.TerminalGui/RpiProbeLogger.TerminalGui.csproj'
-            arguments: '--self-contained -r linux-arm -f net6.0 -c Release'
+            arguments: '--self-contained -r linux-arm -f net6.0 -c Release -o $(Build.ArtifactStagingDirectory)'
 - stage: DeployTerminalGuiHome
   displayName: 'Deploy Home'
   jobs:
