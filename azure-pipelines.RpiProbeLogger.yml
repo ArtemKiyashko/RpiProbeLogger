@@ -39,6 +39,26 @@ stages:
   jobs:
     - deployment: RpiProbeLoggerHome
       environment: Home
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - script: sudo systemctl stop probelogger
+                displayName: 'Stop logger service'
+              - script: sudo systemctl disable probelogger
+                displayName: 'Disable logger service'
+              - task: CopyFiles@2
+                displayName: 'Copy files'
+                inputs:
+                  SourceFolder: $(Build.ArtifactStagingDirectory)
+                  Contents: '**'
+                  TargetFolder: 'home/pi/RpiProbeLogger'
+                  CleanTargetFolder: true
+              - script: sudo systemctl enable $(HOME)/RpiProbeLogger/probelogger.service
+                displayName: 'Enable logger service'
+              - script: sudo systemctl start probelogger
+                displayName: 'Start logger service'
+              
 - stage: DeployRpiProbeLoggerVostok
   displayName: 'Deploy Vostok'
   dependsOn: DeployRpiProbeLoggerHome
