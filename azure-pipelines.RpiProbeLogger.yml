@@ -41,7 +41,9 @@ stages:
   displayName: 'Deploy Home'
   jobs:
     - deployment: RpiProbeLoggerHome
-      environment: Home
+      environment:
+        name: Home
+        resourceType: VirtualMachine
       strategy:
         runOnce:
           deploy:
