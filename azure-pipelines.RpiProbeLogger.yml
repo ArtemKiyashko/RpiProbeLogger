@@ -1,4 +1,4 @@
-name: RpiProbeLogger-$(SourceBranchName)$(Rev:.r)
+name: $(SourceBranchName)$(Rev:.r)
 
 trigger:
   tags:
@@ -70,10 +70,10 @@ stages:
           on:
             success:
               steps:
-                - script: sudo systemctl disable probelogger
-                  displayName: 'Disable logger service'
                 - script: sudo systemctl stop probelogger
                   displayName: 'Stop logger service'
+                - script: sudo systemctl disable probelogger
+                  displayName: 'Disable logger service'
               
 - stage: DeployRpiProbeLoggerVostok
   displayName: 'Deploy Vostok'
