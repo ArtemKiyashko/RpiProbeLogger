@@ -53,7 +53,7 @@ stages:
                 condition: eq(variables.ProbeLoggerServiceExist, 'true')
               - script: sudo systemctl disable probelogger
                 displayName: 'Disable logger service'
-                condition: eq(variablesProbeLoggerServiceExist, 'true')
+                condition: eq(variables.ProbeLoggerServiceExist, 'true')
               - task: CopyFiles@2
                 displayName: 'Copy files'
                 inputs:
