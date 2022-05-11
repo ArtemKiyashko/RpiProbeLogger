@@ -63,13 +63,17 @@ stages:
                   CleanTargetFolder: true
               - script: chmod +x $(HOME)/RpiProbeLogger/RpiProbeLogger
                 displayName: 'Make executable'
+              - script: sudo systemctl enable $(HOME)/RpiProbeLogger/probelogger.service
+                displayName: 'Enable logger service'
+              - script: sudo systemctl start probelogger
+                displayName: 'Start logger service'
           on:
             success:
               steps:
-                - script: sudo systemctl enable $(HOME)/RpiProbeLogger/probelogger.service
-                  displayName: 'Enable logger service'
-                - script: sudo systemctl start probelogger
-                  displayName: 'Start logger service'
+                - script: sudo systemctl disable probelogger
+                  displayName: 'Disable logger service'
+                - script: sudo systemctl stop probelogger
+                  displayName: 'Stop logger service'
               
 - stage: DeployRpiProbeLoggerVostok
   displayName: 'Deploy Vostok'
