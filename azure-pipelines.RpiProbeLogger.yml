@@ -39,14 +39,21 @@ stages:
   jobs:
     - deployment: RpiProbeLoggerHome
       environment: Home
+      variables:
+        - name: ProbeLoggerServiceExist
+          value: false
       strategy:
         runOnce:
           deploy:
             steps:
+              - script: if systemctl --all --type service | grep 'probelogger.service'; then echo "##vso[task.setvariable variable=ProbeLoggerServiceExist]true"; fi
+                displayName: 'Check if service exist'
               - script: sudo systemctl stop probelogger
                 displayName: 'Stop logger service'
+                condition: eq(variables.ProbeLoggerServiceExist, 'true')
               - script: sudo systemctl disable probelogger
                 displayName: 'Disable logger service'
+                condition: eq(variablesProbeLoggerServiceExist, 'true')
               - task: CopyFiles@2
                 displayName: 'Copy files'
                 inputs:
