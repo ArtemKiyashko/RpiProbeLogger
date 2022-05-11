@@ -34,6 +34,9 @@ stages:
             publishWebProjects: false
             projects: 'RpiProbeLogger/RpiProbeLogger.csproj'
             arguments: '--self-contained -r linux-arm -f net6.0 -c Release -o $(Build.ArtifactStagingDirectory)'
+        - publish: $(Build.ArtifactStagingDirectory)
+          displayName: 'Publish artifacts'
+          artifact: RpiProbeLogger
 - stage: DeployRpiProbeLoggerHome
   displayName: 'Deploy Home'
   jobs:
@@ -57,9 +60,9 @@ stages:
               - task: CopyFiles@2
                 displayName: 'Copy files'
                 inputs:
-                  SourceFolder: $(Build.ArtifactStagingDirectory)
+                  SourceFolder: '$(Pipeline.Workspace)/RpiProbeLogger'
                   Contents: '**'
-                  TargetFolder: 'home/pi/RpiProbeLogger'
+                  TargetFolder: '$(HOME)/RpiProbeLogger'
                   CleanTargetFolder: true
               - script: sudo systemctl enable $(HOME)/RpiProbeLogger/probelogger.service
                 displayName: 'Enable logger service'
