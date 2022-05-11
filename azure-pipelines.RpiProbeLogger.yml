@@ -61,7 +61,9 @@ stages:
                   Contents: '**'
                   TargetFolder: '$(HOME)/RpiProbeLogger'
                   CleanTargetFolder: true
-              - script: sudo systemctl enable /home/pi/RpiProbeLogger/probelogger.service
+              - script: chmod +x $(HOME)/RpiProbeLogger/RpiProbeLogger
+                displayName: 'Make executable'
+              - script: sudo systemctl enable $(HOME)/RpiProbeLogger/probelogger.service
                 displayName: 'Enable logger service'
               - script: sudo systemctl start probelogger
                 displayName: 'Start logger service'
