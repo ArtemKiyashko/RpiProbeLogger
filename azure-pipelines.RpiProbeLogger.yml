@@ -33,8 +33,8 @@ stages:
             command: 'publish'
             publishWebProjects: false
             projects: 'RpiProbeLogger/RpiProbeLogger.csproj'
-            arguments: '--self-contained -r linux-arm -f net6.0 -c Release'
-        - publish: $(System.DefaultWorkingDirectory)/RpiProbeLogger/bin/Release/net6.0/linux-arm
+            arguments: '--self-contained -r linux-arm -f net6.0 -c Release -o $(System.DefaultWorkingDirectory)/publish'
+        - publish: $(System.DefaultWorkingDirectory)/publish
           displayName: 'Publish artifacts'
           artifact: RpiProbeLogger
 - stage: DeployRpiProbeLoggerHome
@@ -42,27 +42,22 @@ stages:
   jobs:
     - deployment: RpiProbeLoggerHome
       environment: Home
-      variables:
-        - name: ProbeLoggerServiceExist
-          value: false
       strategy:
         runOnce:
           deploy:
             steps:
-              - script: if systemctl --all --type service | grep 'probelogger.service'; then echo "##vso[task.setvariable variable=ProbeLoggerServiceExist]true"; fi
-                displayName: 'Check if service exist'
               - script: sudo systemctl stop probelogger
                 displayName: 'Stop logger service'
-                condition: eq(variables.ProbeLoggerServiceExist, 'true')
+                continueOnError: true
               - script: sudo systemctl disable probelogger
                 displayName: 'Disable logger service'
-                condition: eq(variables.ProbeLoggerServiceExist, 'true')
+                continueOnError: true
               - task: CopyFiles@2
                 displayName: 'Copy files'
                 inputs:
                   SourceFolder: '$(Pipeline.Workspace)/RpiProbeLogger'
                   Contents: '**'
-                  TargetFolder: '/home/pi/RpiProbeLogger'
+                  TargetFolder: '$(HOME)/RpiProbeLogger'
                   CleanTargetFolder: true
               - script: sudo systemctl enable /home/pi/RpiProbeLogger/probelogger.service
                 displayName: 'Enable logger service'
