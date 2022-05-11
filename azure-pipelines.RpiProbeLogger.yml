@@ -46,12 +46,6 @@ stages:
         resourceType: VirtualMachine
       strategy:
         runOnce:
-          preDeploy:
-            steps:
-              - script: sudo systemctl stop probelogger
-                displayName: 'Stop logger service'
-              - script: sudo systemctl disable probelogger
-                displayName: 'Disable logger service'
           deploy:
             steps:
               - task: CopyFiles@2
