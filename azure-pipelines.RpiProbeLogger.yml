@@ -21,11 +21,14 @@ stages:
             publishWebProjects: false
             projects: 'RpiProbeLogger/RpiProbeLogger.csproj'
             arguments: '--self-contained -r linux-arm -f net6.0 -c Release'
-- stage: DeployRpiProbeLogger
-  displayName: 'Deploy'
+- stage: DeployRpiProbeLoggerHome
+  displayName: 'Deploy Home'
   jobs:
     - deployment: RpiProbeLoggerHome
       environment: Home
+- stage: DeployRpiProbeLoggerVostok
+  displayName: 'Deploy Vostok'
+  dependsOn: DeployRpiProbeLoggerHome
+  jobs:
     - deployment: RpiProbeLoggerVostok
-      dependsOn: RpiProbeLoggerHome
       environment: Vostok

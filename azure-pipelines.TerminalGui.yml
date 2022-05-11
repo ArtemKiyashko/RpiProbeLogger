@@ -16,11 +16,14 @@ stages:
             publishWebProjects: false
             projects: 'RpiProbeLogger.TerminalGui/RpiProbeLogger.TerminalGui.csproj'
             arguments: '--self-contained -r linux-arm -f net6.0 -c Release'
-- stage: DeployTerminalGui
-  displayName: 'Deploy'
+- stage: DeployTerminalGuiHome
+  displayName: 'Deploy Home'
   jobs:
     - deployment: TerminalGuiHome
       environment: Home
+- stage: DeployTerminalGuiVostok
+  displayName: 'Deploy Vostok'
+  dependsOn: DeployTerminalGuiHome
+  jobs:
     - deployment: TerminalGuiVostok
-      dependsOn: TerminalGuiHome
       environment: Vostok
