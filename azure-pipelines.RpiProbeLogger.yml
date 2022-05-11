@@ -34,7 +34,7 @@ stages:
             publishWebProjects: false
             projects: 'RpiProbeLogger/RpiProbeLogger.csproj'
             arguments: '--self-contained -r linux-arm -f net6.0 -c Release -o $(Build.ArtifactStagingDirectory)'
-        - publish: $(Build.ArtifactStagingDirectory)
+        - publish: $(Build.ArtifactStagingDirectory)/RpiProbeLogger
           displayName: 'Publish artifacts'
           artifact: RpiProbeLogger
 - stage: DeployRpiProbeLoggerHome
@@ -62,9 +62,9 @@ stages:
                 inputs:
                   SourceFolder: '$(Pipeline.Workspace)/RpiProbeLogger'
                   Contents: '**'
-                  TargetFolder: '$(HOME)/RpiProbeLogger'
+                  TargetFolder: '/home/pi/RpiProbeLogger'
                   CleanTargetFolder: true
-              - script: sudo systemctl enable $(HOME)/RpiProbeLogger/probelogger.service
+              - script: sudo systemctl enable /home/pi/RpiProbeLogger/probelogger.service
                 displayName: 'Enable logger service'
               - script: sudo systemctl start probelogger
                 displayName: 'Start logger service'
