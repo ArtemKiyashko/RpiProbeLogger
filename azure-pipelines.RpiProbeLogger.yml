@@ -1,5 +1,18 @@
 name: RpiProbeLogger-$(SourceBranchName)$(Rev:.r)
 
+trigger:
+  tags:
+    include:
+      - release-*
+  paths:
+    include:
+      - RpiProbeLogger
+      - RpiProbeLogger.BusModels
+      - ReportCsvHandlerTests
+      - SenseServiceTests
+      - TemperServiceTests
+      - ReportServiceTests
+
 stages:
 - stage: BuildAndTest
   displayName: 'Build and test'
