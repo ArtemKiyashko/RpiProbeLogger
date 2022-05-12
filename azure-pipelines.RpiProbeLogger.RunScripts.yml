@@ -1,0 +1,71 @@
+name: $(SourceBranchName)$(Rev:.r)
+
+trigger:
+  tags:
+    include:
+      - runscripts
+
+variables:
+  - name: projectName
+    value: RpiProbeLogger
+    readonly: true
+
+parameters:
+  - name: sdkVersion
+    displayName: '.NET version'
+    type: string
+    default: net6.0
+    values:
+      - net5.0
+      - net6.0
+  - name: buildConfiguration
+    default: Release
+    displayName: 'Build configuration'
+    type: string
+    values:
+      - Release
+      - Debug
+  - name: targetRuntime
+    default: linux-arm
+    displayName: 'Target runtime'
+    type: string
+    values:
+      - linux-arm
+      - win10-x64
+      - osx.12-x64
+
+stages:
+- stage: DeployRpiProbeLoggerHome
+  displayName: 'Run Home'
+  jobs:
+    - deployment: RpiProbeLoggerHome
+      environment:
+        name: Home
+        resourceType: VirtualMachine
+      workspace:
+        clean: all
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - script: echo "hello"
+                displayName: 'Script'
+- stage: DeployRpiProbeLoggerVostok
+  displayName: 'Run Vostok'
+  dependsOn: DeployRpiProbeLoggerHome
+  jobs:
+    - deployment: RpiProbeLoggerVostok
+      environment:
+        name: Vostok
+        resourceType: VirtualMachine
+      variables:
+        - name: ProbeLoggerServiceExist
+          value: false
+      workspace:
+        clean: all
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - script: echo "hello"
+                displayName: 'Script'
