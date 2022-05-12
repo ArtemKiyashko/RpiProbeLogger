@@ -52,11 +52,11 @@ stages:
           inputs:
             command: 'publish'
             publishWebProjects: false
-            projects: '${{ parameters.projectName }}/${{ parameters.projectName }}.csproj'
+            projects: '${{ variable.projectName }}/${{ variable.projectName }}.csproj'
             arguments: '--self-contained -r ${{ parameters.targetRuntime }} -f ${{ parameters.sdkVersion }} -c ${{ parameters.buildConfiguration }}'
-        - publish: $(System.DefaultWorkingDirectory)/${{ parameters.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/${{ parameters.targetRuntime }}
+        - publish: $(System.DefaultWorkingDirectory)/${{ variable.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/${{ parameters.targetRuntime }}
           displayName: 'Publish artifacts'
-          artifact: ${{ parameters.projectName }}
+          artifact: ${{ variable.projectName }}
 - stage: DeployTerminalGuiHome
   displayName: 'Deploy Home'
   jobs:
@@ -71,9 +71,9 @@ stages:
               - task: CopyFiles@2
                 displayName: 'Copy files'
                 inputs:
-                  SourceFolder: '$(Pipeline.Workspace)/${{ parameters.projectName }}'
+                  SourceFolder: '$(Pipeline.Workspace)/${{ variable.projectName }}'
                   Contents: '**'
-                  TargetFolder: '$(HOME)/${{ parameters.projectName }}'
+                  TargetFolder: '$(HOME)/${{ variable.projectName }}'
                   CleanTargetFolder: true
 - stage: DeployTerminalGuiVostok
   displayName: 'Deploy Vostok'

@@ -61,11 +61,11 @@ stages:
           inputs:
             command: 'publish'
             publishWebProjects: false
-            projects: '${{ parameters.projectName }}/${{ parameters.projectName }}.csproj'
+            projects: '${{ variables.projectName }}/${{ variables.projectName }}.csproj'
             arguments: '--self-contained -r ${{ parameters.targetRuntime }} -f ${{ parameters.sdkVersion }} -c ${{ parameters.buildConfiguration }}'
-        - publish: $(System.DefaultWorkingDirectory)/${{ parameters.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/${{ parameters.targetRuntime }}
+        - publish: $(System.DefaultWorkingDirectory)/${{ variables.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/${{ parameters.targetRuntime }}
           displayName: 'Publish artifacts'
-          artifact: ${{ parameters.projectName }}
+          artifact: ${{ variables.projectName }}
 - stage: DeployRpiProbeLoggerHome
   displayName: 'Deploy Home'
   jobs:
@@ -80,13 +80,13 @@ stages:
               - task: CopyFiles@2
                 displayName: 'Copy files'
                 inputs:
-                  SourceFolder: '$(Pipeline.Workspace)/${{ parameters.projectName }}'
+                  SourceFolder: '$(Pipeline.Workspace)/${{ variables.projectName }}'
                   Contents: '**'
-                  TargetFolder: '$(HOME)/${{ parameters.projectName }}'
+                  TargetFolder: '$(HOME)/${{ variables.projectName }}'
                   CleanTargetFolder: true
-              - script: chmod +x $(HOME)/${{ parameters.projectName }}/${{ parameters.projectName }}
+              - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
                 displayName: 'Make executable'
-              - script: sudo systemctl enable $(HOME)/${{ parameters.projectName }}/probelogger.service
+              - script: sudo systemctl enable $(HOME)/${{ variables.projectName }}/probelogger.service
                 displayName: 'Enable logger service'
               - script: sudo systemctl start probelogger
                 displayName: 'Start logger service'
