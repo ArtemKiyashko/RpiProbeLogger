@@ -1,4 +1,4 @@
-name: TerminalGui-$(SourceBranchName)$(Rev:.r)
+name: $(SourceBranchName)$(Rev:.r)
 
 trigger:
   tags:
@@ -79,9 +79,28 @@ stages:
                   Contents: '**'
                   TargetFolder: '$(HOME)/${{ variables.projectName }}'
                   CleanTargetFolder: true
+              - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
+                displayName: 'Make executable'
 - stage: DeployTerminalGuiVostok
   displayName: 'Deploy Vostok'
   dependsOn: DeployTerminalGuiHome
   jobs:
     - deployment: TerminalGuiVostok
-      environment: Vostok
+      environment:
+        name: Vostok
+        resourceType: VirtualMachine
+      workspace:
+        clean: all
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: CopyFiles@2
+                displayName: 'Copy files'
+                inputs:
+                  SourceFolder: '$(Pipeline.Workspace)/${{ variables.projectName }}'
+                  Contents: '**'
+                  TargetFolder: '$(HOME)/${{ variables.projectName }}'
+                  CleanTargetFolder: true
+              - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
+                displayName: 'Make executable'
