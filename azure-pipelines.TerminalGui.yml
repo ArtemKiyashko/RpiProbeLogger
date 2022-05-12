@@ -9,6 +9,35 @@ trigger:
       - RpiProbeLogger.TerminalGui
       - RpiProbeLogger.BusModels
 
+variables:
+  - name: projectName
+    value: RpiProbeLogger.TerminalGui
+    readonly: true
+
+parameters:
+  - name: sdkVersion
+    displayName: '.NET version'
+    type: string
+    default: net6.0
+    values:
+      - net5.0
+      - net6.0
+  - name: buildConfiguration
+    default: Release
+    displayName: 'Build configuration'
+    type: string
+    values:
+      - Release
+      - Debug
+  - name: targetRuntime
+    default: linux-arm
+    displayName: 'Target runtime'
+    type: string
+    values:
+      - linux-arm
+      - win10-x64
+      - osx.12-x64
+
 stages:
 - stage: BuildAndTest
   displayName: 'Build and test'
@@ -23,13 +52,29 @@ stages:
           inputs:
             command: 'publish'
             publishWebProjects: false
-            projects: 'RpiProbeLogger.TerminalGui/RpiProbeLogger.TerminalGui.csproj'
-            arguments: '--self-contained -r linux-arm -f net6.0 -c Release -o $(Build.ArtifactStagingDirectory)'
+            projects: '${{ parameters.projectName }}/${{ parameters.projectName }}.csproj'
+            arguments: '--self-contained -r ${{ parameters.targetRuntime }} -f ${{ parameters.sdkVersion }} -c ${{ parameters.buildConfiguration }}'
+        - publish: $(System.DefaultWorkingDirectory)/${{ parameters.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/${{ parameters.targetRuntime }}
+          displayName: 'Publish artifacts'
+          artifact: ${{ parameters.projectName }}
 - stage: DeployTerminalGuiHome
   displayName: 'Deploy Home'
   jobs:
     - deployment: TerminalGuiHome
-      environment: Home
+      environment:
+        name: Home
+        resourceType: VirtualMachine
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: CopyFiles@2
+                displayName: 'Copy files'
+                inputs:
+                  SourceFolder: '$(Pipeline.Workspace)/${{ parameters.projectName }}'
+                  Contents: '**'
+                  TargetFolder: '$(HOME)/${{ parameters.projectName }}'
+                  CleanTargetFolder: true
 - stage: DeployTerminalGuiVostok
   displayName: 'Deploy Vostok'
   dependsOn: DeployTerminalGuiHome
