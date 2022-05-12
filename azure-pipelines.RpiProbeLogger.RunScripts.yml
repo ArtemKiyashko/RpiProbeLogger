@@ -35,10 +35,10 @@ parameters:
       - osx.12-x64
 
 stages:
-- stage: DeployRpiProbeLoggerHome
+- stage: RunScriptsHome
   displayName: 'Run Home'
   jobs:
-    - deployment: RpiProbeLoggerHome
+    - deployment: ScriptsHome
       environment:
         name: Home
         resourceType: VirtualMachine
@@ -50,11 +50,10 @@ stages:
             steps:
               - script: echo "hello"
                 displayName: 'Script'
-- stage: DeployRpiProbeLoggerVostok
+- stage: RunScriptsVostok
   displayName: 'Run Vostok'
-  dependsOn: DeployRpiProbeLoggerHome
   jobs:
-    - deployment: RpiProbeLoggerVostok
+    - deployment: ScriptsVostok
       environment:
         name: Vostok
         resourceType: VirtualMachine
