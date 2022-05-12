@@ -66,6 +66,8 @@ stages:
       environment:
         name: Home
         resourceType: VirtualMachine
+      workspace:
+        clean: all
       strategy:
         runOnce:
           deploy:
