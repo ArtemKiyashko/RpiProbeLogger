@@ -54,7 +54,7 @@ stages:
             publishWebProjects: false
             projects: '${{ variable.projectName }}/${{ variable.projectName }}.csproj'
             arguments: '--self-contained -r ${{ parameters.targetRuntime }} -f ${{ parameters.sdkVersion }} -c ${{ parameters.buildConfiguration }}'
-        - publish: $(System.DefaultWorkingDirectory)/${{ variable.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/${{ parameters.targetRuntime }}
+        - publish: ${{ variable.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/${{ parameters.targetRuntime }}/publish
           displayName: 'Publish artifacts'
           artifact: ${{ variable.projectName }}
 - stage: DeployTerminalGuiHome

@@ -63,7 +63,7 @@ stages:
             publishWebProjects: false
             projects: '${{ variables.projectName }}/${{ variables.projectName }}.csproj'
             arguments: '--self-contained -r ${{ parameters.targetRuntime }} -f ${{ parameters.sdkVersion }} -c ${{ parameters.buildConfiguration }}'
-        - publish: ${{ variables.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/${{ parameters.targetRuntime }}/publish/
+        - publish: ${{ variables.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/${{ parameters.targetRuntime }}/publish
           displayName: 'Publish artifacts'
           artifact: ${{ variables.projectName }}
 - stage: DeployRpiProbeLoggerHome
