@@ -1,0 +1,147 @@
+name: $(SourceBranchName)$(Rev:.r)
+
+trigger:
+  tags:
+    include:
+      - release-*
+  paths:
+    include:
+      - RpiProbeLogger
+      - RpiProbeLogger.BusModels
+      - ReportCsvHandlerTests
+      - SenseServiceTests
+      - TemperServiceTests
+      - ReportServiceTests
+
+variables:
+  - name: projectName
+    value: RpiProbeLogger
+    readonly: true
+
+parameters:
+  - name: sdkVersion
+    displayName: '.NET version'
+    type: string
+    default: net6.0
+    values:
+      - net5.0
+      - net6.0
+  - name: buildConfiguration
+    default: Release
+    displayName: 'Build configuration'
+    type: string
+    values:
+      - Release
+      - Debug
+  - name: targetRuntime
+    default: linux-arm
+    displayName: 'Target runtime'
+    type: string
+    values:
+      - linux-arm
+      - win10-x64
+      - osx.12-x64
+
+stages:
+- stage: BuildAndTest
+  displayName: 'Build and test'
+  jobs:
+  - job: BuildAndTest
+    displayName: 'Build and test'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+        - task: DotNetCoreCLI@2
+          displayName: 'Test'
+          inputs:
+            command: 'test'
+            projects: '**/*Tests.csproj'
+        - task: DotNetCoreCLI@2
+          displayName: 'Build'
+          inputs:
+            command: 'publish'
+            publishWebProjects: false
+            projects: '${{ variables.projectName }}/${{ variables.projectName }}.csproj'
+            arguments: '--self-contained -r ${{ parameters.targetRuntime }} -f ${{ parameters.sdkVersion }} -c ${{ parameters.buildConfiguration }}'
+            zipAfterPublish: false
+            modifyOutputPath: false
+        - publish: ${{ variables.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/${{ parameters.targetRuntime }}/publish
+          displayName: 'Publish artifacts'
+          artifact: ${{ variables.projectName }}
+- stage: DeployRpiProbeLoggerHome
+  displayName: 'Deploy Home'
+  jobs:
+    - deployment: RpiProbeLoggerHome
+      environment:
+        name: Home
+        resourceType: VirtualMachine
+      workspace:
+        clean: all
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: CopyFiles@2
+                displayName: 'Copy files'
+                inputs:
+                  SourceFolder: '$(Pipeline.Workspace)/${{ variables.projectName }}'
+                  Contents: '**'
+                  TargetFolder: '$(HOME)/${{ variables.projectName }}'
+                  CleanTargetFolder: true
+              - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
+                displayName: 'Make executable'
+              - script: sudo systemctl enable $(HOME)/${{ variables.projectName }}/probelogger.service
+                displayName: 'Enable logger service'
+              - script: sudo systemctl start probelogger
+                displayName: 'Start logger service'
+          on:
+            success:
+              steps:
+                - script: sudo systemctl stop probelogger
+                  displayName: 'Stop logger service'
+                - script: sudo systemctl disable probelogger
+                  displayName: 'Disable logger service'
+              
+- stage: DeployRpiProbeLoggerVostok
+  displayName: 'Deploy Vostok'
+  dependsOn: DeployRpiProbeLoggerHome
+  jobs:
+    - deployment: RpiProbeLoggerVostok
+      environment:
+        name: Vostok
+        resourceType: VirtualMachine
+      variables:
+        - name: ProbeLoggerServiceExist
+          value: false
+      workspace:
+        clean: all
+      strategy:
+        runOnce:
+          preDeploy:
+            steps:
+              - script: if systemctl --all --type service | grep 'probelogger.service'; then echo "##vso[task.setvariable variable=ProbeLoggerServiceExist]true"; fi
+                displayName: 'Check if service exist'
+              - script: sudo systemctl stop probelogger
+                displayName: 'Stop logger service'
+                condition: eq($[variables.ProbeLoggerServiceExist], 'true')
+              - script: sudo systemctl disable probelogger
+                displayName: 'Disable logger service'
+                condition: eq($[variables.ProbeLoggerServiceExist], 'true')
+          deploy:
+            steps:
+              - task: CopyFiles@2
+                displayName: 'Copy files'
+                inputs:
+                  SourceFolder: '$(Pipeline.Workspace)/${{ variables.projectName }}'
+                  Contents: '**'
+                  TargetFolder: '$(HOME)/${{ variables.projectName }}'
+                  CleanTargetFolder: true
+              - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
+                displayName: 'Make executable'
+          on:
+            success:
+              steps:
+                - script: sudo systemctl enable $(HOME)/${{ variables.projectName }}/probelogger.service
+                  displayName: 'Enable logger service'
+                - script: sudo systemctl start probelogger
+                  displayName: 'Start logger service'
