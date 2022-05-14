@@ -79,6 +79,9 @@ stages:
                 displayName: 'Kill running GUI process'
               - script: if grep ${{ variables.projectName }} $(HOME)/.bashrc; then echo "##vso[task.setvariable variable=TerminalGuiAtStartup]true"; fi
                 displayName: 'Check if GUI run at startup'
+              - script: echo ${{ variables.TerminalGuiAtStartup }}
+              - script: echo $(TerminalGuiAtStartup)
+              - script: echo variables['TerminalGuiAtStartup']
           deploy:
             steps:
               - task: CopyFiles@2
