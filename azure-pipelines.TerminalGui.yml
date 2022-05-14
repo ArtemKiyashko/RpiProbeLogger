@@ -66,10 +66,19 @@ stages:
       environment:
         name: Home
         resourceType: VirtualMachine
+      variables:
+        - name: TerminalGuiAtStartup
+          value: false
       workspace:
         clean: all
       strategy:
         runOnce:
+          preDeploy:
+            steps:
+              - script: pkill -f ${{ variables.projectName }}
+                displayName: 'Kill running GUI process'
+              - script: if grep ${{ variables.projectName }} $(HOME)/.bashrc; then echo "##vso[task.setvariable variable=TerminalGuiAtStartup]true"; fi
+                displayName: 'Check if GUI run at startup'
           deploy:
             steps:
               - task: CopyFiles@2
@@ -81,6 +90,14 @@ stages:
                   CleanTargetFolder: true
               - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
                 displayName: 'Make executable'
+              - script: echo $(HOME)/${{ variables.projectName }}/${{ variables.projectName }} >> $(HOME)/.bashrc
+                displayName: 'Add GUI at startup'
+                condition: eq(variables.TerminalGuiAtStartup, 'false')
+          on:
+            success:
+              steps:
+                - script: sudo reboot -r +1
+                  displayName: 'System reboot in 1 minute'
 - stage: DeployTerminalGuiVostok
   displayName: 'Deploy Vostok'
   dependsOn: DeployTerminalGuiHome
@@ -89,10 +106,19 @@ stages:
       environment:
         name: Vostok
         resourceType: VirtualMachine
+      variables:
+        - name: TerminalGuiAtStartup
+          value: false
       workspace:
         clean: all
       strategy:
         runOnce:
+          preDeploy:
+            steps:
+              - script: pkill -f ${{ variables.projectName }}
+                displayName: 'Kill running GUI process'
+              - script: if grep ${{ variables.projectName }} $(HOME)/.bashrc; then echo "##vso[task.setvariable variable=TerminalGuiAtStartup]true"; fi
+                displayName: 'Check if GUI run at startup'
           deploy:
             steps:
               - task: CopyFiles@2
@@ -104,3 +130,11 @@ stages:
                   CleanTargetFolder: true
               - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
                 displayName: 'Make executable'
+              - script: echo $(HOME)/${{ variables.projectName }}/${{ variables.projectName }} >> $(HOME)/.bashrc
+                displayName: 'Add GUI at startup'
+                condition: eq(variables.TerminalGuiAtStartup, 'false')
+          on:
+            success:
+              steps:
+                - script: sudo reboot -r +1
+                  displayName: 'System reboot in 1 minute'
