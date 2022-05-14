@@ -11,6 +11,7 @@ namespace RpiProbeLogger.Led.Services
     public class StatusReportService : IDisposable, IStatusReportService
     {
         private readonly ILogger<StatusReportService> _logger;
+        private readonly ILedMatrix _ledMatrix;
         private IList<CellColor> _currentStatuses;
         private readonly IDictionary<bool?, Color> statusToColorMapping = new Dictionary<bool?, Color>
         {
@@ -18,9 +19,10 @@ namespace RpiProbeLogger.Led.Services
             { false, new Color(255, 0, 0) },
         };
 
-        public StatusReportService(ILogger<StatusReportService> logger)
+        public StatusReportService(ILogger<StatusReportService> logger, ILedMatrix ledMatrix)
         {
             _logger = logger;
+            _ledMatrix = ledMatrix;
             _currentStatuses = new List<CellColor>();
             Show();
         }
@@ -52,7 +54,7 @@ namespace RpiProbeLogger.Led.Services
         private void Show()
         {
             var pixels = new Pixels(ImmutableList.CreateRange(_currentStatuses));
-            LedMatrix.SetPixels(pixels);
+            _ledMatrix.SetPixels(pixels);
         }
 
         protected virtual void Dispose(bool dispose)

@@ -5,6 +5,7 @@ using RpiProbeLogger.Reports.Models;
 using RpiProbeLogger.Sensors.Models;
 using Sense.Led;
 using System;
+using System.Threading.Tasks;
 
 namespace RpiProbeLogger.Reports.Services
 {
@@ -26,23 +27,23 @@ namespace RpiProbeLogger.Reports.Services
             _reportFileHandler = reportFileHandler;
         }
 
-        public bool WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse)
+        public Task<ReportModel> WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse)
         {
-
+            ReportModel failModel = new() { Status = false };
             try
             {
                 ReportFileCreated = _reportFileHandler.CreateFile<ReportModel>(gpsModuleResponse);
                 var record = MapToReportModel(senseResponse, gpsModuleResponse, outsideTemperatureResponse);
                 _reportFileHandler.WriteRecord(record);
                 _statusReportService.DisplayStatus(record);
-                return true;
+                return Task.FromResult(record);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error writing report");
-                _statusReportService.DisplayStatus<ReportModel>(new() { Status = false });
+                _statusReportService.DisplayStatus(failModel);
             }
-            return false;
+            return Task.FromResult(failModel);
         }
 
         private static ReportModel MapToReportModel(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse)

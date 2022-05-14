@@ -1,7 +1,15 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using NetMQ.Sockets;
+using RpiProbeLogger.Bus;
+using RpiProbeLogger.Bus.Telemetry;
+using RpiProbeLogger.Communication.Settings;
 using RpiProbeLogger.Led.Services;
+using RpiProbeLogger.Reports.Services;
 using RpiProbeLogger.Sensors.Services;
 using Sense.RTIMU;
+using System;
 using System.IO.Ports;
 
 namespace RpiProbeLogger.Extensions
@@ -15,6 +23,20 @@ namespace RpiProbeLogger.Extensions
                 ReadTimeout = 500,
                 WriteTimeout = 500,
                 NewLine = "\r"
+            };
+            serialPort.Open();
+            services.AddSingleton(serialPort);
+            return services;
+        }
+
+        public static IServiceCollection AddSerialPort(this IServiceCollection services, IConfiguration configuration)
+        {
+            var portSettings = configuration.GetSection("SerialPortOptions").Get<SerialPortOptions>();
+            var serialPort = new SerialPort(portSettings.PortName, portSettings.BaudRate)
+            {
+                ReadTimeout = portSettings.ReadTimeout,
+                WriteTimeout = portSettings.WriteTimeout,
+                NewLine = portSettings.NewLine
             };
             serialPort.Open();
             services.AddSingleton(serialPort);
@@ -59,6 +81,31 @@ namespace RpiProbeLogger.Extensions
             });
             services.AddSingleton<ITemperService, TemperService>();
             return services;
+        }
+
+        public static IServiceCollection AddReportingServices(this IServiceCollection services, Action<TelemetryReporterOptions> busOptions)
+        {
+            AddReportingServices(services);
+            services.Configure(busOptions);
+            return services;
+        }
+
+        public static IServiceCollection AddReportingServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            AddReportingServices(services);
+            services.Configure<TelemetryReporterOptions>(configuration.GetSection("TelemetryReporterOptions"));
+            return services;
+        }
+
+        private static void AddReportingServices(IServiceCollection services)
+        {
+            services.TryAddTransient<PublisherSocket>();
+            services.TryAddTransient<IBusReporter, BusReporter>();
+            services.AddTransient<ILedMatrix, LedMatrix>();
+            services.AddTransient<IReportService, ReportService>()
+                .Decorate<IReportService, TelemetryReporter>();
+            services.AddSingleton<IStatusReportService, StatusReportService>();
+            services.AddTransient<IReportFileHandler, ReportCsvHandler>();
         }
     }
 }

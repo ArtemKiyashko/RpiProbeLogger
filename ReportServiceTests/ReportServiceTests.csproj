@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RpiProbeLogger.BusModels\RpiProbeLogger.BusModels.csproj" />
     <ProjectReference Include="..\RpiProbeLogger\RpiProbeLogger.csproj" />
   </ItemGroup>
 
