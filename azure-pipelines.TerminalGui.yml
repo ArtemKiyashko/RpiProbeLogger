@@ -96,7 +96,7 @@ stages:
           on:
             success:
               steps:
-                - script: sudo reboot -r +1
+                - script: sudo shutdown -r +1
                   displayName: 'System reboot in 1 minute'
 - stage: DeployTerminalGuiVostok
   displayName: 'Deploy Vostok'
@@ -115,7 +115,7 @@ stages:
         runOnce:
           preDeploy:
             steps:
-              - script: pkill -f ${{ variables.projectName }}
+              - script: sudo pkill -f ${{ variables.projectName }}
                 displayName: 'Kill running GUI process'
               - script: if grep ${{ variables.projectName }} $(HOME)/.bashrc; then echo "##vso[task.setvariable variable=TerminalGuiAtStartup]true"; fi
                 displayName: 'Check if GUI run at startup'
@@ -136,5 +136,5 @@ stages:
           on:
             success:
               steps:
-                - script: sudo reboot -r +1
+                - script: sudo shutdown -r +1
                   displayName: 'System reboot in 1 minute'
