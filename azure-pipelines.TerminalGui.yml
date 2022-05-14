@@ -75,7 +75,7 @@ stages:
         runOnce:
           preDeploy:
             steps:
-              - script: sudo pkill -f ${{ variables.projectName }}
+              - script: sudo pkill -9 -f ${{ variables.projectName }}
                 displayName: 'Kill running GUI process'
               - script: if grep ${{ variables.projectName }} $(HOME)/.bashrc; then echo "##vso[task.setvariable variable=TerminalGuiAtStartup]true"; fi
                 displayName: 'Check if GUI run at startup'
@@ -92,7 +92,7 @@ stages:
                 displayName: 'Make executable'
               - script: echo $(HOME)/${{ variables.projectName }}/${{ variables.projectName }} >> $(HOME)/.bashrc
                 displayName: 'Add GUI at startup'
-                condition: eq(variables.TerminalGuiAtStartup, 'false')
+                condition: eq($[variables.TerminalGuiAtStartup], 'false')
           on:
             success:
               steps:
@@ -115,7 +115,7 @@ stages:
         runOnce:
           preDeploy:
             steps:
-              - script: sudo pkill -f ${{ variables.projectName }}
+              - script: sudo pkill -9 -f ${{ variables.projectName }}
                 displayName: 'Kill running GUI process'
               - script: if grep ${{ variables.projectName }} $(HOME)/.bashrc; then echo "##vso[task.setvariable variable=TerminalGuiAtStartup]true"; fi
                 displayName: 'Check if GUI run at startup'
@@ -132,7 +132,7 @@ stages:
                 displayName: 'Make executable'
               - script: echo $(HOME)/${{ variables.projectName }}/${{ variables.projectName }} >> $(HOME)/.bashrc
                 displayName: 'Add GUI at startup'
-                condition: eq(variables.TerminalGuiAtStartup, 'false')
+                condition: eq($[variables.TerminalGuiAtStartup], 'false')
           on:
             success:
               steps:
