@@ -77,8 +77,6 @@ stages:
             steps:
               - script: sudo pkill -f ${{ variables.projectName }}
                 displayName: 'Kill running GUI process'
-              - script: if grep ${{ variables.projectName }} $(HOME)/.bashrc; then echo "##vso[task.setvariable variable=TerminalGuiAtStartup;isOutput=true]true"; fi
-                displayName: 'Check if GUI run at startup'
           deploy:
             steps:
               - task: CopyFiles@2
@@ -90,6 +88,8 @@ stages:
                   CleanTargetFolder: true
               - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
                 displayName: 'Make executable'
+              - script: if grep ${{ variables.projectName }} $(HOME)/.bashrc; then echo "##vso[task.setvariable variable=TerminalGuiAtStartup]true"; fi
+                displayName: 'Check if GUI run at startup'
               - script: echo $(HOME)/${{ variables.projectName }}/${{ variables.projectName }} >> $(HOME)/.bashrc
                 displayName: 'Add GUI at startup'
                 condition: eq(variables['TerminalGuiAtStartup'], 'false')
@@ -117,8 +117,6 @@ stages:
             steps:
               - script: sudo pkill -f ${{ variables.projectName }}
                 displayName: 'Kill running GUI process'
-              - script: if grep ${{ variables.projectName }} $(HOME)/.bashrc; then echo "##vso[task.setvariable variable=TerminalGuiAtStartup]true"; fi
-                displayName: 'Check if GUI run at startup'
           deploy:
             steps:
               - task: CopyFiles@2
@@ -130,6 +128,8 @@ stages:
                   CleanTargetFolder: true
               - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
                 displayName: 'Make executable'
+              - script: if grep ${{ variables.projectName }} $(HOME)/.bashrc; then echo "##vso[task.setvariable variable=TerminalGuiAtStartup]true"; fi
+                displayName: 'Check if GUI run at startup'
               - script: echo $(HOME)/${{ variables.projectName }}/${{ variables.projectName }} >> $(HOME)/.bashrc
                 displayName: 'Add GUI at startup'
                 condition: eq($[variables.TerminalGuiAtStartup], 'false')
