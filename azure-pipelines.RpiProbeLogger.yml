@@ -123,10 +123,10 @@ stages:
                 displayName: 'Check if service exist'
               - script: sudo systemctl stop probelogger
                 displayName: 'Stop logger service'
-                condition: eq(variables.ProbeLoggerServiceExist, 'true')
+                condition: eq($[variables.ProbeLoggerServiceExist], 'true')
               - script: sudo systemctl disable probelogger
                 displayName: 'Disable logger service'
-                condition: eq(variablesProbeLoggerServiceExist, 'true')
+                condition: eq($[variables.ProbeLoggerServiceExist], 'true')
           deploy:
             steps:
               - task: CopyFiles@2

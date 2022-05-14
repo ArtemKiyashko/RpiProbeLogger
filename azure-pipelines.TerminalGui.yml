@@ -92,7 +92,7 @@ stages:
                 displayName: 'Make executable'
               - script: echo $(HOME)/${{ variables.projectName }}/${{ variables.projectName }} >> $(HOME)/.bashrc
                 displayName: 'Add GUI at startup'
-                condition: eq($[variables.TerminalGuiAtStartup], 'false')
+                condition: eq(variables['TerminalGuiAtStartup'], 'false')
           on:
             success:
               steps:
