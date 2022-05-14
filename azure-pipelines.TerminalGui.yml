@@ -4,10 +4,6 @@ trigger:
   tags:
     include:
       - release-*
-  paths:
-    include:
-      - RpiProbeLogger.TerminalGui
-      - RpiProbeLogger.BusModels
 
 variables:
   - name: projectName
