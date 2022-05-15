@@ -1,10 +1,5 @@
 name: $(SourceBranchName)$(Rev:.r)
 
-trigger:
-  tags:
-    include:
-      - release-*
-
 variables:
   - name: projectName
     value: RpiProbeLogger.TerminalGui
@@ -67,6 +62,7 @@ stages:
           value: false
       workspace:
         clean: all
+      condition: eq(variables['Build.Reason'], 'IndividualCI')
       strategy:
         runOnce:
           preDeploy:
@@ -97,6 +93,7 @@ stages:
           value: false
       workspace:
         clean: all
+      condition: and(startsWith(variables['Build.SourceBranch'], 'refs/heads/release-'), eq(variables['Build.Reason'], 'IndividualCI')
       strategy:
         runOnce:
           preDeploy:
