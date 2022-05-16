@@ -64,21 +64,6 @@ stages:
         resourceType: VirtualMachine
       workspace:
         clean: all
-      variables:
-        - name: ProbeLoggerServiceExist
-          value: false
-        - name: ReverseSshRemotePort
-          value: 22
-        - name: ReverseSshLocalPort
-          value: 43022
-        - name: ReverseSshHomeUser
-          value: pi
-        - name: ReverseSshKeyLocation
-          value: $(HOME)/.ssh/vostok_reverse
-        - name: ReverseSshHomeAddress
-          value: $(homeAddress)
-        - name: ReverseSshScriptLocation
-          value: $(HOME)/connectivity/reverse_ssh.sh
       condition: eq(variables['Build.Reason'], 'IndividualCI')
       strategy:
         runOnce:
@@ -97,30 +82,6 @@ stages:
                 displayName: 'Enable logger service'
               - script: sudo systemctl start probelogger
                 displayName: 'Start logger service'
-              - task: CopyFiles@2
-                displayName: 'Copy reverse ssh files'
-                inputs:
-                  SourceFolder: '.'
-                  Contents: 'reverse_ssh*'
-                  TargetFolder: '$(HOME)/connectivity'
-                  CleanTargetFolder: true
-              - task: replacetokens@5
-                displayName: 'Replace tokens for reverse ssh'
-                inputs:
-                  targetFiles: '$(HOME)/connectivity/reverse_ssh*'
-                  encoding: 'auto'
-                  tokenPattern: 'default'
-                  writeBOM: true
-                  actionOnMissing: 'warn'
-                  keepToken: false
-                  actionOnNoFiles: 'continue'
-                  enableTransforms: false
-                  enableRecursion: false
-                  useLegacyPattern: false
-                  useLegacyEmptyFeature: false
-                  enableTelemetry: true
-              - script: chmod +x ${{ variables.ReverseSshScriptLocation }}
-                displayName: 'Make reverse_ssh.sh executable'
           on:
             success:
               steps:
@@ -140,18 +101,6 @@ stages:
       variables:
         - name: ProbeLoggerServiceExist
           value: false
-        - name: ReverseSshRemotePort
-          value: 22
-        - name: ReverseSshLocalPort
-          value: 43022
-        - name: ReverseSshHomeUser
-          value: pi
-        - name: ReverseSshKeyLocation
-          value: $(HOME)/.ssh/vostok_reverse
-        - name: ReverseSshHomeAddress
-          value: $(homeAddress)
-        - name: ReverseSshScriptLocation
-          value: $(HOME)/connectivity/reverse_ssh.sh
       workspace:
         clean: all
       condition: and(startsWith(variables['Build.SourceBranch'], 'refs/heads/release-'), eq(variables['Build.Reason'], 'IndividualCI'))
@@ -170,38 +119,14 @@ stages:
           deploy:
             steps:
               - task: CopyFiles@2
-                displayName: 'Copy logger files'
+                displayName: 'Copy files'
                 inputs:
                   SourceFolder: '$(Pipeline.Workspace)/${{ variables.projectName }}'
                   Contents: '**'
                   TargetFolder: '$(HOME)/${{ variables.projectName }}'
                   CleanTargetFolder: true
               - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
-                displayName: 'Make logger executable'
-              - task: CopyFiles@2
-                displayName: 'Copy reverse ssh files'
-                inputs:
-                  SourceFolder: '.'
-                  Contents: 'reverse_ssh*'
-                  TargetFolder: '$(HOME)/connectivity'
-                  CleanTargetFolder: true
-              - task: replacetokens@5
-                displayName: 'Replace tokens for reverse ssh'
-                inputs:
-                  targetFiles: '$(HOME)/connectivity/reverse_ssh*'
-                  encoding: 'auto'
-                  tokenPattern: 'default'
-                  writeBOM: true
-                  actionOnMissing: 'warn'
-                  keepToken: false
-                  actionOnNoFiles: 'continue'
-                  enableTransforms: false
-                  enableRecursion: false
-                  useLegacyPattern: false
-                  useLegacyEmptyFeature: false
-                  enableTelemetry: true
-              - script: chmod +x ${{ variables.ReverseSshScriptLocation }}
-                displayName: 'Make reverse_ssh.sh executable'
+                displayName: 'Make executable'
           on:
             success:
               steps:
