@@ -1,5 +1,10 @@
 name: $(SourceBranchName)$(Rev:.r)
 
+trigger:
+  paths:
+    exclude:
+      - ReverseSsh
+
 variables:
   - name: projectName
     value: RpiProbeLogger
@@ -64,7 +69,7 @@ stages:
         resourceType: VirtualMachine
       workspace:
         clean: all
-      condition: eq(variables['Build.Reason'], 'IndividualCI')
+      condition: in(variables['Build.Reason'], 'IndividualCI', 'Manual')
       strategy:
         runOnce:
           deploy:
@@ -103,7 +108,7 @@ stages:
           value: false
       workspace:
         clean: all
-      condition: and(startsWith(variables['Build.SourceBranch'], 'refs/heads/release-'), eq(variables['Build.Reason'], 'IndividualCI'))
+      condition: and(startsWith(variables['Build.SourceBranch'], 'refs/heads/release-'), in(variables['Build.Reason'], 'IndividualCI', 'Manual'))
       strategy:
         runOnce:
           preDeploy:
