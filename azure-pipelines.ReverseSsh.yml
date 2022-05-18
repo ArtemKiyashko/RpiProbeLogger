@@ -36,9 +36,9 @@ stages:
         - name: ReverseSshServiceExist
           value: false
         - name: ReverseSshUserHomeDirectory
-          value: $(HOME)
+          value: $[HOME]
         - name: ReverseSshScriptPath
-          value: $(HOME)/${{ variables.projectName }}/reverse_ssh.sh
+          value: $[HOME]/${{ variables.projectName }}/reverse_ssh.sh
       condition: in(variables['Build.Reason'], 'IndividualCI', 'Manual')
       strategy:
         runOnce:

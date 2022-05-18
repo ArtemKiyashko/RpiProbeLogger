@@ -4,6 +4,7 @@ trigger:
   paths:
     exclude:
       - ReverseSsh
+      - azure-pipelines.ReverseSsh.yml
 
 variables:
   - name: projectName
