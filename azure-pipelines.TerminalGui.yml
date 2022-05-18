@@ -1,5 +1,10 @@
 name: $(SourceBranchName)$(Rev:.r)
 
+trigger:
+  paths:
+    exclude:
+      - ReverseSsh
+
 variables:
   - name: projectName
     value: RpiProbeLogger.TerminalGui
