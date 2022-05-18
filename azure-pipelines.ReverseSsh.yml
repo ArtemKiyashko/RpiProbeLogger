@@ -9,10 +9,6 @@ variables:
   - name: projectName
     value: ReverseSsh
     readonly: true
-  - name: ReverseSshUserHomeDirectory
-    value: $(HOME)
-  - name: ReverseSshScriptPath
-    value: $(HOME)/${{ variables.projectName }}/reverse_ssh.sh
 
 stages:
 - stage: PublishScripts
@@ -39,6 +35,10 @@ stages:
         - group: Home
         - name: ReverseSshServiceExist
           value: false
+        - name: ReverseSshUserHomeDirectory
+          value: $(HOME)
+        - name: ReverseSshScriptPath
+          value: $(HOME)/${{ variables.projectName }}/reverse_ssh.sh
       condition: in(variables['Build.Reason'], 'IndividualCI', 'Manual')
       strategy:
         runOnce:
