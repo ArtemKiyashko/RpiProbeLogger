@@ -19,7 +19,7 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-        - publish: ${{ variables.projectName }}
+        - publish: ${{ variables.projectName }}/Scripts
           displayName: 'Publish artifacts'
           artifact: ${{ variables.projectName }}
 - stage: SetupReverseSshHome
@@ -35,10 +35,6 @@ stages:
         - group: Home
         - name: ReverseSshServiceExist
           value: false
-        - name: ReverseSshUserHomeDirectory
-          value: $[HOME]
-        - name: ReverseSshScriptPath
-          value: $[HOME]/${{ variables.projectName }}/reverse_ssh.sh
       condition: in(variables['Build.Reason'], 'IndividualCI', 'Manual')
       strategy:
         runOnce:
