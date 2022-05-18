@@ -39,7 +39,7 @@ stages:
         - group: Home
         - name: ReverseSshServiceExist
           value: false
-      condition: eq(variables['Build.Reason'], 'IndividualCI')
+      condition: in(variables['Build.Reason'], 'IndividualCI', 'Manual')
       strategy:
         runOnce:
           preDeploy:
