@@ -1,59 +1,40 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO.Ports;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RpiProbeLogger.Communication.Commands;
-using RpiProbeLogger.Led.Services;
-using RpiProbeLogger.Reports.Services;
-using RpiProbeLogger.Sensors.Services;
-using Sense.RTIMU;
+using RpiProbeLogger.Extensions;
+using System.Threading.Tasks;
 
 namespace RpiProbeLogger
 {
     class Program
     {
+        private static IConfiguration Configuration;
         static async Task Main(string[] args)
         {
             var host = new HostBuilder()
-                .ConfigureServices((hostContext, services) => {
+                .ConfigureAppConfiguration((hostContext, builder) =>
+                {
+                    builder.AddJsonFile("settings.json", true);
+                    builder.AddEnvironmentVariables();
+                    Configuration = builder.Build();
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
                     services.AddHostedService<RpiProbeHostedService>();
-                    services.AddSingleton<SerialPort>((_) => { 
-                        var serialPort = new SerialPort("/dev/ttyS0", 115200);
-                        serialPort.ReadTimeout = 500;
-                        serialPort.WriteTimeout = 500;
-                        serialPort.NewLine = "\r";
-                        serialPort.Open();
-                        return serialPort;
-                    });
+                    services.AddSerialPort(Configuration);
                     services.AddTransient<GpsModuleStatusCommand>();
                     services.AddTransient<GpsModuleCoordinatesCommand>();
-                    services.AddSingleton<RTIMUSettings>((_) => RTIMUSettings.CreateDefault());
-                    services.AddSingleton<RTIMU>((provider) => {
-                        var muSettings = provider.GetService<RTIMUSettings>();
-                        return muSettings.CreateIMU();
-                    });
-                    services.AddSingleton<RTPressure>((provider) => {
-                        var muSettings = provider.GetService<RTIMUSettings>();
-                        return muSettings.CreatePressure();
-                    });
-                    services.AddSingleton<RTHumidity>((provider) => {
-                        var muSettings = provider.GetService<RTIMUSettings>();
-                        return muSettings.CreateHumidity();
-                    });
-                    services.AddTransient<SenseService>();
-                    services.AddTransient<ReportService>();
-                    services.AddSingleton<IStatusReportService, StatusReportService>();
-                    services.AddSingleton<TemperService>();
+                    services.AddSensorDataServices();
+                    services.AddTemper();
+                    services.AddReportingServices(Configuration);
                 })
                 .ConfigureLogging(logConfig =>
                 {
                     logConfig.SetMinimumLevel(LogLevel.Information);
                     logConfig.AddConsole();
+                    logConfig.AddZeromMqLogger(Configuration);
                 })
                 .Build();
             await host.RunAsync();

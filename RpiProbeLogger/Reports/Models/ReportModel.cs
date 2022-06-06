@@ -2,36 +2,32 @@
 using RpiProbeLogger.Interfaces;
 using Sense.Led;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 
 namespace RpiProbeLogger.Reports.Models
 {
-    public class ReportModel : IResponse
+    public readonly record struct ReportModel(
+        string Latitude,
+        string Longitude,
+        DateTime? DateTimeUtc,
+        double? Altitude,
+        double? Speed,
+        double? Course,
+        Vector3? FusionPose,
+        Quaternion? FusionQPose,
+        Vector3? Gyro,
+        Vector3? Accel,
+        Vector3? Compass,
+        float? Pressure,
+        float? PressureTemperature,
+        float? Humidity,
+        float? HumidityTemperature,
+        double? OutsideTemperature) : IResponse
     {
-        public string Latitude { get; set; }
-        public string Longitude { get; set; }
-        public DateTime DateTimeUtc { get; set; }
-        public double Altitude { get; set; }
-        public double Speed { get; set; }
-        public double Course { get; set; }
-        public Vector3? FusionPose { get; set; }
-        public Quaternion? FusionQPose { get; set; }
-        public Vector3? Gyro { get; set; }
-        public Vector3? Accel { get; set; }
-        public Vector3? Compass { get; set; }
-        public float? Pressure { get; set; }
-        public float? PressureTemperature { get; set; }
-        public float? Humidity { get; set; }
-        public float? HumidityTemperature { get; set; }
-        public double? OutsideTemperature { get; set; }
+        [Ignore]
+        public bool Status { get; init; } = true;
 
         [Ignore]
-        public bool Status => !string.IsNullOrEmpty(Latitude) &&
-                                !string.IsNullOrEmpty(Longitude);
-
-        [Ignore]
-        public Cell StatusPosition => new Cell(0,4);
+        public Cell StatusPosition { get { return new(0, 4); } }
     }
 }

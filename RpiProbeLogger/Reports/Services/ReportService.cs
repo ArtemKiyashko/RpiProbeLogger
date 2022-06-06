@@ -1,81 +1,53 @@
-﻿using CsvHelper;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using RpiProbeLogger.Communication.Models;
 using RpiProbeLogger.Led.Services;
 using RpiProbeLogger.Reports.Models;
 using RpiProbeLogger.Sensors.Models;
+using Sense.Led;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace RpiProbeLogger.Reports.Services
 {
-    public class ReportService : IDisposable
+    public class ReportService : IReportService
     {
-        private StreamWriter _streamWriter;
-        private CsvWriter _csvWriter;
         private readonly ILogger<ReportService> _logger;
         private readonly IStatusReportService _statusReportService;
-        public bool ReportFileCreated { get => _csvWriter != null; }
+        private readonly IReportFileHandler _reportFileHandler;
 
-        public ReportService(ILogger<ReportService> logger, IStatusReportService statusReportService)
+        public bool ReportFileCreated { get; private set; }
+
+        public ReportService(
+            ILogger<ReportService> logger,
+            IStatusReportService statusReportService,
+            IReportFileHandler reportFileHandler)
         {
             _logger = logger;
             _statusReportService = statusReportService;
+            _reportFileHandler = reportFileHandler;
         }
 
-        protected virtual void Dispose(bool dispose)
+        public Task<ReportModel> WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse)
         {
-            _csvWriter?.Dispose();
-            _streamWriter?.Dispose();
-            _csvWriter = null;
-            _streamWriter = null;
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        public bool WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, double? outsideTemperature)
-        {
-            var record = new ReportModel();
+            ReportModel failModel = new() { Status = false };
             try
             {
-                if (_csvWriter == null)
-                    CreateCsv(gpsModuleResponse);
-                record = MapToReportModel(senseResponse, gpsModuleResponse, outsideTemperature);
-                _csvWriter.WriteRecord(record);
-                _csvWriter.NextRecord();
+                ReportFileCreated = _reportFileHandler.CreateFile<ReportModel>(gpsModuleResponse);
+                var record = MapToReportModel(senseResponse, gpsModuleResponse, outsideTemperatureResponse);
+                _reportFileHandler.WriteRecord(record);
                 _statusReportService.DisplayStatus(record);
-                return true;
-            } catch (Exception ex)
+                return Task.FromResult(record);
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error writing report");
-                _statusReportService.DisplayStatus(record);
+                _statusReportService.DisplayStatus(failModel);
             }
-            return false;
+            return Task.FromResult(failModel);
         }
 
-        private void CreateCsv(GpsModuleResponse gpsModuleResponse)
-        {
-            var fileName = $"{gpsModuleResponse.DateTimeUtc.Date:ddMMyyyy}.csv";
-            var existingLog = File.Exists(fileName);
-            _streamWriter = new StreamWriter(fileName, true);
-            _streamWriter.AutoFlush = true;
-            _csvWriter = new CsvWriter(_streamWriter, CultureInfo.InvariantCulture);
-            _csvWriter.Configuration.NewLine = CsvHelper.Configuration.NewLine.CRLF;
-            if (!existingLog)
-            {
-                _csvWriter.WriteHeader<ReportModel>();
-                _csvWriter.NextRecord();
-            }
-            _logger.LogInformation($"Report file {(existingLog ? "chosen" : "created")}: {fileName}");
-        }
-
-        private ReportModel MapToReportModel(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, double? outsideTemperature)
-            => new ReportModel
+        private static ReportModel MapToReportModel(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse)
+            => new()
             {
                 Latitude = gpsModuleResponse.Latitude,
                 Longitude = gpsModuleResponse.Longitude,
@@ -83,16 +55,17 @@ namespace RpiProbeLogger.Reports.Services
                 Altitude = gpsModuleResponse.Altitude,
                 Speed = gpsModuleResponse.Speed,
                 Course = gpsModuleResponse.Course,
-                FusionPose = senseResponse?.FusionPose,
-                FusionQPose = senseResponse?.FusionQPose,
-                Gyro = senseResponse?.Gyro,
-                Accel = senseResponse?.Accel,
-                Compass = senseResponse?.Compass,
-                Pressure = senseResponse?.Pressure,
-                PressureTemperature = senseResponse?.PressureTemperature,
-                Humidity = senseResponse?.Humidity,
-                HumidityTemperature = senseResponse?.HumidityTemperature,
-                OutsideTemperature = outsideTemperature
+                FusionPose = senseResponse.FusionPose,
+                FusionQPose = senseResponse.FusionQPose,
+                Gyro = senseResponse.Gyro,
+                Accel = senseResponse.Accel,
+                Compass = senseResponse.Compass,
+                Pressure = senseResponse.Pressure,
+                PressureTemperature = senseResponse.PressureTemperature,
+                Humidity = senseResponse.Humidity,
+                HumidityTemperature = senseResponse.HumidityTemperature,
+                OutsideTemperature = outsideTemperatureResponse.OutsideTemperature,
+                Status = true
             };
     }
 }

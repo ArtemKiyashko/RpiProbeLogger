@@ -24,10 +24,10 @@ if(!$sftpSession)
 	$sftpSession = New-SFTPSession -Computer raspberrypi.local -Credential $credentials -KeyFile $rsaKeyFile
 }
 
-dotnet publish RpiProbeLogger\RpiProbeLogger.csproj --self-contained -r linux-arm -f netcoreapp3.1 -c $c
+dotnet publish RpiProbeLogger\RpiProbeLogger.csproj --self-contained -r linux-arm -f net6.0 -c $c
 # Copy build result if no errors
 if ($?) {
-	Set-SFTPFolder -SFTPSession $sftpSession -RemotePath '/home/pi/RpiProbeLogger' -LocalFolder "RpiProbeLogger\bin\$($c)\netcoreapp3.1\linux-arm\publish" -Overwrite
+	Set-SFTPFolder -SFTPSession $sftpSession -RemotePath '/home/pi/RpiProbeLogger' -LocalFolder "RpiProbeLogger\bin\$($c)\net5.0\linux-arm\publish" -Overwrite
 	Invoke-SSHCommand -Command 'chmod +x /home/pi/RpiProbeLogger/RpiProbeLogger' -SSHSession $sshSession
 	if ($enableService)
 	{

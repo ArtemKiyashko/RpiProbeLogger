@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RpiProbeLogger.Communication.Models
+﻿namespace RpiProbeLogger.Communication.Models
 {
     public enum GpsModuleModes
     {

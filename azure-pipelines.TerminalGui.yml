@@ -1,0 +1,126 @@
+name: $(SourceBranchName)$(Rev:.r)
+
+trigger:
+  tags:
+    include:
+      - release-*
+
+variables:
+  - name: projectName
+    value: RpiProbeLogger.TerminalGui
+    readonly: true
+
+parameters:
+  - name: sdkVersion
+    displayName: '.NET version'
+    type: string
+    default: net6.0
+    values:
+      - net5.0
+      - net6.0
+  - name: buildConfiguration
+    default: Release
+    displayName: 'Build configuration'
+    type: string
+    values:
+      - Release
+      - Debug
+  - name: targetRuntime
+    default: linux-arm
+    displayName: 'Target runtime'
+    type: string
+    values:
+      - linux-arm
+      - win10-x64
+      - osx.12-x64
+
+stages:
+- stage: BuildAndTest
+  displayName: 'Build and test'
+  jobs:
+  - job: BuildAndTest
+    displayName: 'Build and test'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+        - task: DotNetCoreCLI@2
+          displayName: 'Build'
+          inputs:
+            command: 'publish'
+            publishWebProjects: false
+            projects: '${{ variables.projectName }}/${{ variables.projectName }}.csproj'
+            arguments: '--self-contained -r ${{ parameters.targetRuntime }} -f ${{ parameters.sdkVersion }} -c ${{ parameters.buildConfiguration }}'
+            zipAfterPublish: false
+            modifyOutputPath: false
+        - publish: ${{ variables.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/${{ parameters.targetRuntime }}/publish
+          displayName: 'Publish artifacts'
+          artifact: ${{ variables.projectName }}
+- stage: DeployTerminalGuiHome
+  displayName: 'Deploy Home'
+  jobs:
+    - deployment: TerminalGuiHome
+      environment:
+        name: Home
+        resourceType: VirtualMachine
+      variables:
+        - name: TerminalGuiAtStartup
+          value: false
+      workspace:
+        clean: all
+      strategy:
+        runOnce:
+          preDeploy:
+            steps:
+              - script: sudo pkill -f ${{ variables.projectName }}
+                displayName: 'Kill running GUI process'
+          deploy:
+            steps:
+              - task: CopyFiles@2
+                displayName: 'Copy files'
+                inputs:
+                  SourceFolder: '$(Pipeline.Workspace)/${{ variables.projectName }}'
+                  Contents: '**'
+                  TargetFolder: '$(HOME)/${{ variables.projectName }}'
+                  CleanTargetFolder: true
+              - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
+                displayName: 'Make executable'
+- stage: DeployTerminalGuiVostok
+  displayName: 'Deploy Vostok'
+  dependsOn: DeployTerminalGuiHome
+  jobs:
+    - deployment: TerminalGuiVostok
+      environment:
+        name: Vostok
+        resourceType: VirtualMachine
+      variables:
+        - name: TerminalGuiAtStartup
+          value: false
+      workspace:
+        clean: all
+      strategy:
+        runOnce:
+          preDeploy:
+            steps:
+              - script: sudo pkill -f ${{ variables.projectName }}
+                displayName: 'Kill running GUI process'
+          deploy:
+            steps:
+              - task: CopyFiles@2
+                displayName: 'Copy files'
+                inputs:
+                  SourceFolder: '$(Pipeline.Workspace)/${{ variables.projectName }}'
+                  Contents: '**'
+                  TargetFolder: '$(HOME)/${{ variables.projectName }}'
+                  CleanTargetFolder: true
+              - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
+                displayName: 'Make executable'
+              - script: if grep ${{ variables.projectName }} $(HOME)/.bashrc; then echo "##vso[task.setvariable variable=TerminalGuiAtStartup]true"; fi
+                displayName: 'Check if GUI run at startup'
+              - script: echo $(HOME)/${{ variables.projectName }}/${{ variables.projectName }} >> $(HOME)/.bashrc
+                displayName: 'Add GUI at startup'
+                condition: eq(variables['TerminalGuiAtStartup'], 'false')
+          on:
+            success:
+              steps:
+                - script: sudo shutdown -r +1
+                  displayName: 'System reboot in 1 minute'

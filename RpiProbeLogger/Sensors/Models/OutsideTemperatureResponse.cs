@@ -1,20 +1,16 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using RpiProbeLogger.Interfaces;
 using Sense.Led;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RpiProbeLogger.Sensors.Models
 {
-    public class OutsideTemperatureResponse : IResponse
+    public readonly record struct OutsideTemperatureResponse(
+        double? OutsideTemperature) : IResponse
     {
-        public double? OutsideTemperature { get; set; }
-
         [Ignore]
         public bool Status => OutsideTemperature.HasValue;
 
         [Ignore]
-        public Cell StatusPosition => new Cell(0, 3);
+        public Cell StatusPosition { get { return new(0, 3); } }
     }
 }

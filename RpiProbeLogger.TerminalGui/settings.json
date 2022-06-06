@@ -1,0 +1,10 @@
+{
+  "TelemetryReceiverSettings": {
+    "Ip": "127.0.0.1",
+    "Port": 5557
+  },
+  "LogsReceiverSettings": {
+    "Ip": "127.0.0.1",
+    "Port": 5556
+  }
+}
