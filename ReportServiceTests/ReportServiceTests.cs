@@ -22,6 +22,7 @@ namespace ReportServiceTests
 
         public ReportServiceTests()
         {
+            throw new Exception("test");
             _fixture = new Fixture().Customize(new AutoMoqCustomization());
             _statusReportServiceMock = _fixture.Freeze<Mock<IStatusReportService>>();
             _reportFileHandlerMock = _fixture.Freeze<Mock<IReportFileHandler>>();
