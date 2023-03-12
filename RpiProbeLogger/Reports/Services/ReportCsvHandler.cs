@@ -19,14 +19,14 @@ namespace RpiProbeLogger.Reports.Services
             _logger = logger;
         }
 
-        public bool CreateFile<T>(GpsModuleResponse gpsModuleResponse)
+        public void CreateFile<T>(GpsModuleResponse gpsModuleResponse)
         {
             _fileName = $"{gpsModuleResponse.DateTimeUtc?.Date:ddMMyyyy}.csv";
 
             if (File.Exists(_fileName))
             {
                 _logger.LogInformation($"Report file chosen: {_fileName}");
-                return true;
+                return;
             }
 
             EnsureCsvWriterCreated();
@@ -35,7 +35,7 @@ namespace RpiProbeLogger.Reports.Services
             _csvWriter.NextRecord();
 
             _logger.LogInformation($"Report file created: {_fileName}");
-            return true;
+            return;
         }
 
         protected virtual void Dispose(bool dispose)

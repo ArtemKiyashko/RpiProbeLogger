@@ -46,8 +46,6 @@ namespace RpiProbeLogger.Bus.Telemetry
             }
         }
 
-        public bool ReportFileCreated => _decoratee.ReportFileCreated;
-
         public void Dispose() => _onChangeToken.Dispose();
 
         public async Task<ReportModel> WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse)

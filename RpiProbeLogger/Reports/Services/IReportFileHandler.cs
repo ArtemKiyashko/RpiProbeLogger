@@ -5,7 +5,7 @@ namespace RpiProbeLogger.Reports.Services
 {
     public interface IReportFileHandler : IDisposable
     {
-        bool CreateFile<T>(GpsModuleResponse gpsModuleResponse);
+        void CreateFile<T>(GpsModuleResponse gpsModuleResponse);
         void WriteRecord<T>(T record);
     }
 }

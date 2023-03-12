@@ -1,6 +1,8 @@
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Xunit2;
+using CsvHelper;
+using FluentAssertions;
 using Moq;
 using RpiProbeLogger.Communication.Models;
 using RpiProbeLogger.Led.Services;
@@ -8,6 +10,9 @@ using RpiProbeLogger.Reports.Models;
 using RpiProbeLogger.Reports.Services;
 using RpiProbeLogger.Sensors.Models;
 using System;
+using System.Globalization;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -30,10 +35,18 @@ namespace ReportServiceTests
 
         [Theory]
         [AutoData]
-        public async Task ShouldCreateReportRow_GpsDataIsNull(SenseResponse senseResponse, OutsideTemperatureResponse outsideTemperatureResponse) =>
-            Assert.True((await _reportService
-                .WriteReport(senseResponse, default, outsideTemperatureResponse))
-                .Status);
+        public async Task ShouldCreateReportRow_GpsDataIsNull_ReportFileCreated(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse)
+        {
+            await _reportService.WriteReport(senseResponse, gpsModuleResponse, outsideTemperatureResponse);
+
+            Assert.True((await _reportService.WriteReport(senseResponse, default, outsideTemperatureResponse)).Status);
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task ShouldThrowException_GpsDataIsNull_ReportNotFileCreated(SenseResponse senseResponse, OutsideTemperatureResponse outsideTemperatureResponse) =>
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _reportService.WriteReport(senseResponse, default, outsideTemperatureResponse));
 
         [Theory]
         [AutoData]
@@ -56,11 +69,14 @@ namespace ReportServiceTests
                 .WriteReport(senseResponse, gpsModuleResponse, outsideTemperatureResponse))
                 .Status);
 
-        [Fact]
-        public async Task ShouldCreateReportRow_AllDataNull() =>
-            Assert.True((await _reportService
-                .WriteReport(default, default, default))
-                .Status);
+        [Theory]
+        [AutoData]
+        public async Task ShouldCreateReportRow_AllDataNull_ReportFileCreated(GpsModuleResponse gpsModuleResponse)
+        {
+            await _reportService.WriteReport(default, gpsModuleResponse, default);
+
+            Assert.True((await _reportService.WriteReport(default, default, default)).Status);
+        }
 
         [Theory]
         [AutoData]
@@ -77,6 +93,19 @@ namespace ReportServiceTests
         {
             await _reportService.WriteReport(default, gpsModuleResponse, default);
             _statusReportServiceMock.Verify(r => r.DisplayStatus(It.Is<ReportModel>(r => r.Status)), Times.Once);
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task ShoudCallCreateFileOne_IfGpsDataLostInFlight(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse)
+        {
+            await _reportService
+                .WriteReport(senseResponse, gpsModuleResponse, outsideTemperatureResponse); //begin normally with GPS data available
+
+            await _reportService
+                .WriteReport(senseResponse, default, outsideTemperatureResponse); //simulate GPS data lost in-flight
+
+            _reportFileHandlerMock.Verify(f => f.CreateFile<ReportModel>(It.IsAny<GpsModuleResponse>()), Times.Once);
         }
     }
 }
