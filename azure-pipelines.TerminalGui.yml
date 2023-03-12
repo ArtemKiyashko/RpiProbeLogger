@@ -1,6 +1,9 @@
 name: $(SourceBranchName)$(Rev:.r)
 
 trigger:
+  branches:
+    include:
+      - master
   paths:
     exclude:
       - ReverseSsh
@@ -98,7 +101,7 @@ stages:
           value: false
       workspace:
         clean: all
-      condition: and(startsWith(variables['Build.SourceBranch'], 'refs/heads/release-'), in(variables['Build.Reason'], 'IndividualCI', 'Manual'))
+      condition: and(startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), in(variables['Build.Reason'], 'IndividualCI', 'Manual'))
       strategy:
         runOnce:
           preDeploy:

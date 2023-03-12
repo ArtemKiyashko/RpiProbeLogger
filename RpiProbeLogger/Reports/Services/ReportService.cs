@@ -15,7 +15,7 @@ namespace RpiProbeLogger.Reports.Services
         private readonly IStatusReportService _statusReportService;
         private readonly IReportFileHandler _reportFileHandler;
 
-        public bool ReportFileCreated { get; private set; }
+        private bool _reportFileCreated { get; set; }
 
         public ReportService(
             ILogger<ReportService> logger,
@@ -30,9 +30,11 @@ namespace RpiProbeLogger.Reports.Services
         public Task<ReportModel> WriteReport(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse)
         {
             ReportModel failModel = new() { Status = false };
+
+            EnsureReportFileCreated(gpsModuleResponse);
+
             try
             {
-                ReportFileCreated = _reportFileHandler.CreateFile<ReportModel>(gpsModuleResponse);
                 var record = MapToReportModel(senseResponse, gpsModuleResponse, outsideTemperatureResponse);
                 _reportFileHandler.WriteRecord(record);
                 _statusReportService.DisplayStatus(record);
@@ -44,6 +46,18 @@ namespace RpiProbeLogger.Reports.Services
                 _statusReportService.DisplayStatus(failModel);
             }
             return Task.FromResult(failModel);
+        }
+
+        private void EnsureReportFileCreated(GpsModuleResponse gpsModuleResponse)
+        {
+            if (!_reportFileCreated && !gpsModuleResponse.Status)
+                throw new ArgumentNullException(nameof(gpsModuleResponse), "Not enough data to create report file");
+
+            if (!_reportFileCreated)
+            {
+                _reportFileHandler.CreateFile<ReportModel>(gpsModuleResponse);
+                _reportFileCreated = true;
+            }
         }
 
         private static ReportModel MapToReportModel(SenseResponse senseResponse, GpsModuleResponse gpsModuleResponse, OutsideTemperatureResponse outsideTemperatureResponse)

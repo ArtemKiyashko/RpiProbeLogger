@@ -44,13 +44,7 @@ namespace RpiProbeLogger
         {
             var gpsStatus = _gpsModuleStatusCommand.GetStatus();
 
-            if (gpsStatus?.Enabled == false)
-                _gpsModuleStatusCommand.SetStatus(
-                        new GpsModuleStatusResponse
-                        {
-                            Enabled = true,
-                            Mode = GpsModuleModes.Standalone
-                        });
+            EnsureGpsEnabled(gpsStatus);
 
             while (true)
             {
@@ -58,21 +52,30 @@ namespace RpiProbeLogger
                     return Task.CompletedTask;
 
                 var gpsData = _gpsModuleCoordinatesCommand.GetGpsData();
-                if (gpsData.Status || _reportService.ReportFileCreated)
+
+                var senseData = _senseService.GetSensorsData();
+                var outsideTemperatureResponse = _temperService.ReadTemperature();
+                try
                 {
-                    var senseData = _senseService.GetSensorsData();
-                    var outsideTemperatureResponse = _temperService.ReadTemperature();
-                    try
-                    {
-                        _reportService.WriteReport(senseData, gpsData, outsideTemperatureResponse);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Error writing report");
-                    }
+                    _reportService.WriteReport(senseData, gpsData, outsideTemperatureResponse);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error writing report");
                 }
                 Thread.Sleep(1000);
             }
+        }
+
+        private void EnsureGpsEnabled(GpsModuleStatusResponse gpsStatus)
+        {
+            if (gpsStatus?.Enabled == false)
+                _gpsModuleStatusCommand.SetStatus(
+                        new GpsModuleStatusResponse
+                        {
+                            Enabled = true,
+                            Mode = GpsModuleModes.Standalone
+                        });
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
