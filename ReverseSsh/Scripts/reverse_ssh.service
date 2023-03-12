@@ -1,0 +1,20 @@
+[Unit]
+Description=Reverse SSH Tunnel
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=pi
+WorkingDirectory=#{ReverseSshUserHomeDirectory}#
+ExecStartPre=/bin/bash -c 'until host example.com; do sleep 1; done'
+ExecStart=/bin/bash #{ReverseSshScriptPath}#
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+Type=exec
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=VostokSsh
+
+[Install]
+WantedBy=multi-user.target
