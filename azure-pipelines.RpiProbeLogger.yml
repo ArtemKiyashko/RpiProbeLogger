@@ -2,10 +2,10 @@ name: $(SourceBranchName)$(Rev:.r)
 
 trigger:
   branches:
-      include:
-        - master
+    include:
+      - master
   tags:
-      - release-
+  - release
   paths:
     exclude:
       - ReverseSsh
