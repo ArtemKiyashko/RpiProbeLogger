@@ -6,7 +6,7 @@ trigger:
       - master
   tags:
     include:
-      - release
+      - release-*
   paths:
     include:
       - ReverseSsh
