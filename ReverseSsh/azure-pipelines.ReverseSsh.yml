@@ -4,6 +4,8 @@ trigger:
   branches:
     include:
       - master
+  tags:
+      - release-
   paths:
     include:
       - ReverseSsh
