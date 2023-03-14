@@ -78,7 +78,7 @@ stages:
         runOnce:
           preDeploy:
             steps:
-              - script: sudo pkill -f ${{ variables.projectName }}
+              - script: sudo pkill -9 -f ${{ variables.projectName }}
                 displayName: 'Kill running GUI process'
           deploy:
             steps:
@@ -109,7 +109,7 @@ stages:
         runOnce:
           preDeploy:
             steps:
-              - script: sudo pkill -f ${{ variables.projectName }}
+              - script: sudo pkill -9 -f ${{ variables.projectName }}
                 displayName: 'Kill running GUI process'
           deploy:
             steps:
