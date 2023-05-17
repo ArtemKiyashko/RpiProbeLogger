@@ -90,7 +90,7 @@ stages:
               - task: replacetokens@5
                 displayName: 'Replace tokens'
                 inputs:
-                  targetFiles: '$(HOME)/${{ variables.projectName }}/*'
+                  targetFiles: '$(HOME)/${{ variables.projectName }}/*.service'
                   encoding: 'auto'
                   tokenPattern: 'default'
                   writeBOM: true
@@ -154,7 +154,7 @@ stages:
               - task: replacetokens@5
                 displayName: 'Replace tokens'
                 inputs:
-                  targetFiles: '$(HOME)/${{ variables.projectName }}/*'
+                  targetFiles: '$(HOME)/${{ variables.projectName }}/*.service'
                   encoding: 'auto'
                   tokenPattern: 'default'
                   writeBOM: true
