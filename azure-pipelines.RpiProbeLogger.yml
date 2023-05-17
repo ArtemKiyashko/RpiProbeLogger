@@ -73,6 +73,8 @@ stages:
       environment:
         name: Home
         resourceType: VirtualMachine
+      variables:
+        - group: Home
       workspace:
         clean: all
       condition: in(variables['Build.Reason'], 'IndividualCI', 'Manual')
@@ -125,6 +127,7 @@ stages:
         name: Vostok
         resourceType: VirtualMachine
       variables:
+        - group: Vostok
         - name: ProbeLoggerServiceExist
           value: false
       workspace:
