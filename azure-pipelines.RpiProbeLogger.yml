@@ -31,15 +31,6 @@ parameters:
     values:
       - Release
       - Debug
-  - name: targetRuntime
-    default: linux-arm
-    displayName: 'Target runtime'
-    type: string
-    values:
-      - linux-arm
-      - linux-arm64
-      - win10-x64
-      - osx.12-x64
 
 stages:
 - stage: BuildAndTest
@@ -56,12 +47,21 @@ stages:
             command: 'test'
             projects: '**/*Tests.csproj'
         - task: DotNetCoreCLI@2
-          displayName: 'Build'
+          displayName: 'Build arm'
           inputs:
             command: 'publish'
             publishWebProjects: false
             projects: '${{ variables.projectName }}/${{ variables.projectName }}.csproj'
-            arguments: '--self-contained -r linux-arm -r linux-arm64 -f ${{ parameters.sdkVersion }} -c ${{ parameters.buildConfiguration }}'
+            arguments: '--self-contained -r linux-arm -f ${{ parameters.sdkVersion }} -c ${{ parameters.buildConfiguration }}'
+            zipAfterPublish: false
+            modifyOutputPath: false
+        - task: DotNetCoreCLI@2
+          displayName: 'Build arm64'
+          inputs:
+            command: 'publish'
+            publishWebProjects: false
+            projects: '${{ variables.projectName }}/${{ variables.projectName }}.csproj'
+            arguments: '--self-contained -r linux-arm64 -f ${{ parameters.sdkVersion }} -c ${{ parameters.buildConfiguration }}'
             zipAfterPublish: false
             modifyOutputPath: false
         - publish: ${{ variables.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/linux-arm/publish
