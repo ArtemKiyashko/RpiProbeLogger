@@ -3,8 +3,8 @@ Description=Probe Logger Service
 
 [Service]
 User=root
-WorkingDirectory=/home/pi
-ExecStart=/home/pi/RpiProbeLogger/RpiProbeLogger
+WorkingDirectory=#{ServiceUserHomeDirectory}
+ExecStart=#{ServiceUserHomeDirectory}/RpiProbeLogger/RpiProbeLogger
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 Restart=on-failure
