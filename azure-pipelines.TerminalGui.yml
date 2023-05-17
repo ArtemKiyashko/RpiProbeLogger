@@ -37,6 +37,7 @@ parameters:
     type: string
     values:
       - linux-arm
+      - linux-arm64
       - win10-x64
       - osx.12-x64
 
@@ -55,12 +56,15 @@ stages:
             command: 'publish'
             publishWebProjects: false
             projects: '${{ variables.projectName }}/${{ variables.projectName }}.csproj'
-            arguments: '--self-contained -r ${{ parameters.targetRuntime }} -f ${{ parameters.sdkVersion }} -c ${{ parameters.buildConfiguration }}'
+            arguments: '--self-contained -r linux-arm -r linux-arm64 -f ${{ parameters.sdkVersion }} -c ${{ parameters.buildConfiguration }}'
             zipAfterPublish: false
             modifyOutputPath: false
-        - publish: ${{ variables.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/${{ parameters.targetRuntime }}/publish
-          displayName: 'Publish artifacts'
+        - publish: ${{ variables.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/linux-arm/publish
+          displayName: 'Publish artifacts arm'
           artifact: ${{ variables.projectName }}
+        - publish: ${{ variables.projectName }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.sdkVersion }}/linux-arm64/publish
+          displayName: 'Publish artifacts arm64'
+          artifact: ${{ variables.projectName }}Arm64
 - stage: DeployTerminalGuiHome
   displayName: 'Deploy Home'
   jobs:
@@ -85,7 +89,7 @@ stages:
               - task: CopyFiles@2
                 displayName: 'Copy files'
                 inputs:
-                  SourceFolder: '$(Pipeline.Workspace)/${{ variables.projectName }}'
+                  SourceFolder: '$(Pipeline.Workspace)/${{ variables.projectName }}Arm64'
                   Contents: '**'
                   TargetFolder: '$(HOME)/${{ variables.projectName }}'
                   CleanTargetFolder: true
