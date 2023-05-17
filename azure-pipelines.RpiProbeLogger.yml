@@ -87,6 +87,21 @@ stages:
                   Contents: '**'
                   TargetFolder: '$(HOME)/${{ variables.projectName }}'
                   CleanTargetFolder: true
+              - task: replacetokens@5
+                displayName: 'Replace tokens'
+                inputs:
+                  targetFiles: '$(HOME)/${{ variables.projectName }}/*.service'
+                  encoding: 'auto'
+                  tokenPattern: 'default'
+                  writeBOM: true
+                  actionOnMissing: 'warn'
+                  keepToken: false
+                  actionOnNoFiles: 'continue'
+                  enableTransforms: false
+                  enableRecursion: false
+                  useLegacyPattern: false
+                  useLegacyEmptyFeature: false
+                  enableTelemetry: true
               - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
                 displayName: 'Make executable'
               - script: sudo systemctl enable $(HOME)/${{ variables.projectName }}/probelogger.service
@@ -136,6 +151,21 @@ stages:
                   Contents: '**'
                   TargetFolder: '$(HOME)/${{ variables.projectName }}'
                   CleanTargetFolder: true
+              - task: replacetokens@5
+                displayName: 'Replace tokens'
+                inputs:
+                  targetFiles: '$(HOME)/${{ variables.projectName }}/*.service'
+                  encoding: 'auto'
+                  tokenPattern: 'default'
+                  writeBOM: true
+                  actionOnMissing: 'warn'
+                  keepToken: false
+                  actionOnNoFiles: 'continue'
+                  enableTransforms: false
+                  enableRecursion: false
+                  useLegacyPattern: false
+                  useLegacyEmptyFeature: false
+                  enableTelemetry: true
               - script: chmod +x $(HOME)/${{ variables.projectName }}/${{ variables.projectName }}
                 displayName: 'Make executable'
           on:
